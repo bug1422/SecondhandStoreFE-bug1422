@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+
+body {
+    color: #515151;
+    font-family: Roboto, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    overflow-x: hidden;
+    font-size: 14px;
+}
+
+.header {
+    background-color: #F9D71C;
+    height: 80px;
+}
+
+.logo-container {
+    width: 200px;
+}
+
+.logo-container img {
+    width: 100%;
+}
+
+.header img {
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+.contact {
+    justify-content: end;
+    color: #fff;
+}
+
+.contact .contact-detail {
+    color: black !important;
+    padding-right: 20px;
+    transition: color 0.2s linear;
+    display: flexbox;
+    justify-content: center;
+    align-self: center;
+}
+
+.contact .contact-detail:hover {
+    color: white !important;
+}
+
+.user-avt img {
+    width: 50px;
+    height: 50px;
+}
+
+
+
+#dropdownMenuButton {
+    box-shadow: none;
+}
+
+
+.footer {
+    background-color: white;
+    color: black;
+    bottom: 0;
+    width: 100%;
+ 
+}
+
+.footer-left {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 0 10px;
+}
+
+.logo-footer {
+    color: black;
+}
+
+.footer-middle,
+.footer-right {
+    margin-top: 30px;
+}
+
+.left-content {
+    margin-top: 10px;
+}
+
+.middle-content,
+.right-content {
+    margin-top: 20px;
+}
+
+.middle-title,
+.right-title {
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.middle-content ion-icon {
+    color: #f2b705;
+    padding-right: 10px;
+}
+
+.right-content a {
+    color: black;
+}
+
+.right-content a:hover {
+    text-decoration: none;
+    color: #f2b705;
+    transition: color 0.1s linear;
+}
+
+.footer-footer {
+    text-align: center;
+    font-size: 14px;
+
+}
+
+@keyframes changeColor {
+    from {
+        color: black;
+    }
+
+    to {
+        color: #fff;
+    }
+}

@@ -1,0 +1,89 @@
+{
+    "categories": [
+        {
+            "categoryId": 1,
+            "categoryName": "Subcategory 1"
+        },
+        {
+            "categoryId": 2,
+            "categoryName": "Subcategory 2"
+        },
+        {
+            "categoryId": 3,
+            "categoryName": "Subcategory 3"
+        }
+    ],
+    "blogs": [
+        {
+            "title": "Blog Title 1",
+            "thumbnail": "thumbnail1.jpg",
+            "introduce": "Introduction to Blog 1",
+            "categoryId": 2,
+            "content": "<h2>My Blog</h2><p>Welcome to my blog! Here you will find my thoughts and musings on various topics.</p><h2>Latest Post</h2><h3>My Trip to Paris</h3><p>I recently visited Paris and it was amazing! The food, the sights, the culture - everything was incredible. I highly recommend visiting if you get the chance.</p>",
+            "author": "Author 1",
+            "time": "2023-06-20 10:00:00",
+            "feedbackId": 1,
+            "difficulty": "Easy",
+            "preparationTime": "30 minutes",
+            "cookingTime": "1 hour",
+            "servingSize": "2 servings",
+            "tableOfContents": "Table of Contents for Blog 1"
+        },
+        {
+            "title": "Blog Title 2",
+            "thumbnail": "thumbnail2.jpg",
+            "introduce": "Introduction to Blog 2",
+            "categoryId": 1,
+            "content": "Content of Blog 2",
+            "author": "Author 2",
+            "time": "2023-06-21 14:30:00",
+            "feedbackId": 2,
+            "difficulty": "Medium",
+            "preparationTime": "45 minutes",
+            "cookingTime": "1.5 hours",
+            "servingSize": "4 servings",
+            "tableOfContents": "Table of Contents for Blog 2"
+        }
+    ],
+    "users": [
+        {
+            "userId": 1,
+            "email": "user1@example.com",
+            "password": "password1",
+            "role": "Viewer"
+        },
+        {
+            "userId": 2,
+            "email": "user2@example.com",
+            "password": "password2",
+            "role": "Viewer"
+        },
+        {
+            "userId": 3,
+            "email": "user3@example.com",
+            "password": "password3",
+            "role": "Manager",
+            "name": "Manager Name",
+            "gender": "Female",
+            "phone": "1234567890",
+            "address": "Manager Address"
+        }
+        
+    ],
+    "feedbacks": [
+        {
+            "feedbackId": 1,
+            "userId": 1,
+            "blogId": 1,
+            "content": "Feedback content for Blog 1",
+            "rate": 4
+        },
+        {
+            "feedbackId": 2,
+            "userId": 2,
+            "blogId": 2,
+            "content": "Feedback content for Blog 2",
+            "rate": 5
+        }
+    ]
+}

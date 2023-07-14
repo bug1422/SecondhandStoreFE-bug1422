@@ -1,0 +1,9 @@
+.triangle {
+    position: relative;
+    top: 10%;
+    left: 90%;
+    width: 10%;
+    height: 10%;
+    -webkit-transform: rotate(45deg);
+    background: green;
+  }

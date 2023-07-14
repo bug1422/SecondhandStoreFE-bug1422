@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/static/css/main.e523c81a.css",
+    "main.js": "/static/js/main.7fe607bd.js",
+    "static/js/787.4a6fbd76.chunk.js": "/static/js/787.4a6fbd76.chunk.js",
+    "static/media/transaction.png": "/static/media/transaction.11fd20fcb3b2ad932902.png",
+    "static/media/headphone.png": "/static/media/headphone.68133c58c9fa955dfa03.png",
+    "static/media/shirt-game.png": "/static/media/shirt-game.465a1b94daf86d89c89e.png",
+    "static/media/shirt-mu.png": "/static/media/shirt-mu.3e1960874001f39068df.png",
+    "static/media/shirt-t1.png": "/static/media/shirt-t1.4e86dffdb344162d082b.png",
+    "static/media/banner_image.svg": "/static/media/banner_image.ff634d8f80246f75824420f7ebbba7ed.svg",
+    "static/media/dashboard_img.png": "/static/media/dashboard_img.05cfd12de76e4870ec36.png",
+    "static/media/user.png": "/static/media/user.ed0fad3ef77473f7a178.png",
+    "static/media/logo1.png": "/static/media/logo1.2eb6a1013af0ba8f1ad3.png",
+    "index.html": "/index.html",
+    "main.e523c81a.css.map": "/static/css/main.e523c81a.css.map",
+    "main.7fe607bd.js.map": "/static/js/main.7fe607bd.js.map",
+    "787.4a6fbd76.chunk.js.map": "/static/js/787.4a6fbd76.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e523c81a.css",
+    "static/js/main.7fe607bd.js"
+  ]
+}
