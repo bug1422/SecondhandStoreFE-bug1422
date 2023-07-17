@@ -72,7 +72,6 @@ export const ReportList = () => {
     )
     return (
         <div className='d-flex'>
-            <Menu selected='report-list' />
             <div className='flex-1 container text-white bg-body-tertiary w-100 min-vh-100'>
                 <div className="input-group col-3 border rounded-pill bg-body-secondary search-field my-3">
                     <span className="input-group-text bg-body-secondary border-0 rounded-pill" id="basic-addon1">

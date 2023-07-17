@@ -4,6 +4,7 @@ import { LoadingSpinner } from "../../../components/loading/LoadingSpinner"
 import Cookies from 'universal-cookie'
 import jwt from 'jwt-decode'
 import axios from "axios"
+import '../styles/login.css';
 
 export const SignIn = () => {
     axios.defaults.baseURL = 'https://localhost:7115';
@@ -13,8 +14,6 @@ export const SignIn = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [isSubmitted, setIsSubmitted] = useState(false)
     const [remem, setRemem] = useState(false)
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
     useEffect(() => {
         let cookie = cookies.get('jwt_authorization')
         if (cookie !== undefined) {
@@ -29,7 +28,7 @@ export const SignIn = () => {
         setTimeout(() => { setIsLoading(false) }, 2000)
     }, [])
 
-    const fetchData = async () => {
+    const fetchData = async (email, password) => {
         await axios.post("/account/login", {
             email: email,
             password: password
@@ -59,53 +58,98 @@ export const SignIn = () => {
         })
     }
 
-    const handleForm = () => {
-        if (email === "" || password === "") {
+    const onSubmit = (e) => {
+        e.preventDefault()
+        const formData = new FormData(e.currentTarget)
+        const data = Object.fromEntries(formData)
+        if (data.email === "" || data.password === "") {
             alert("Missing email or password")
         }
         else {
             setIsLoading(true)
-            console.log('fetching ...')
-            fetchData()
+            fetchData(data.email,data.password)
         }
     }
+    // const renderFormOld = (
+    //     <form className="row m-3" onSubmit={(e) => {
+    //         e.preventDefault()
+    //         handleForm()
+    //     }}>
+    //         <div className="col-md-12 mb-3">
+    //             <label for="email" className="form-label text-dark">Email</label>
+    //             <input type="text" onChange={(e) => setEmail(e.target.value)} className="form-control" id="email" />
+    //         </div>
+    //         <div className="col-md-12 mb-3">
+    //             <label for="password" className="form-label text-dark">Password</label>
+    //             <input type="password" onChange={(e) => setPassword(e.target.value)} className="form-control" id="password" />
+    //             <a href="/auth/recovery-request" className="form-text link__color form__helper">
+    //                 Forgot password?
+    //             </a>
+    //         </div>
+    //         <div className="col-md-6 mb-3 form-check flex items-center">
+    //             <div className="mx-3">
+    //                 <input onChange={(e) => setRemem(e.target.value)} type="checkbox" className="form-check-input" id="policies" />
+    //                 <label className="form-check-label text-bold" for="policies">Remember me</label>
+    //             </div>
+    //         </div>
+    //         <div className="col-md-6 d-flex justify-content-end">
+    //             <button type="submit" className="btn btn-dark">Login</button>
+    //         </div>
+    //         <div className="col-md-6 d-flex">
+    //         </div>
+    //     </form>
+    // )
     const renderForm = (
-        <form className="row m-3" onSubmit={(e) => {
-            e.preventDefault()
-            handleForm()
-        }}>
-            <div className="col-md-12 mb-3">
-                <label for="email" className="form-label text-dark">Email</label>
-                <input type="text" onChange={(e) => setEmail(e.target.value)} className="form-control" id="email" />
-            </div>
-            <div className="col-md-12 mb-3">
-                <label for="password" className="form-label text-dark">Password</label>
-                <input type="password" onChange={(e) => setPassword(e.target.value)} className="form-control" id="password" />
-                <a href="/auth/recovery-request" className="form-text link__color form__helper">
-                    Forgot password?
-                </a>
-            </div>
-            <div className="col-md-6 mb-3 form-check flex items-center">
-                <div className="mx-3">
-                    <input onChange={(e) => setRemem(e.target.value)} type="checkbox" className="form-check-input" id="policies" />
-                    <label className="form-check-label text-bold" for="policies">Remember me</label>
+        <div id="all">
+            <div id="content">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-3 col-md-6">
+                            <nav aria-label="breadcrumb">
+                            </nav>
+                        </div>
+                        <div className="col-lg-6">
+                            <div className="box">
+                                <h1>Login</h1>
+                                <hr />
+                                <form onSubmit={(e)=>{onSubmit(e)}} className="row mt-3" action="customer-orders.html" method="post">
+                                    <div className="form-group col-md-12 mb-3 form-check flex items-center">
+                                        <label for="email">Email</label>
+                                        <input id="email" name="email" type="text" className="form-control" />
+                                    </div>
+                                    <div className="form-group col-md-12 mb-3 form-check flex items-center">
+                                        <label for="password">Password</label>
+                                        <input id="password" name="password" type="password" className="form-control" />
+                                    </div>
+                                    <div className="col-md-12 mb-3 form-check flex items-center">
+                                        <div className="mx-3">
+                                            <input onChange={(e) => setRemem(e.target.value)} type="checkbox" className="form-check-input" id="policies" />
+                                            <label className="form-check-label text-bold" for="policies">Remember me</label>
+                                        </div>
+                                    </div>
+                                    <p className="text-muted col-md-8">Don't have an account ? <a href="/auth/register">Register here</a></p>
+                                    <div className="col-md-1"></div>
+                                    <button type="submit" className="btn btn-primary col-md-3">
+                                        Login
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div className="col-md-6 d-flex justify-content-end">
-                <button type="submit" className="btn btn-dark">Login</button>
-            </div>
-            <div className="col-md-6 d-flex">
-            </div>
-        </form>
+        </div>
     )
     return (
         <div className="wrapper">
-            <h1 className="form__heading my-3 text-capitalize">Login to second-hand web store</h1>
-            {isLoading ? <LoadingSpinner /> :
+            {renderForm}
+            {/* {isLoading ? <>
+                <LoadingSpinner />
+                <a className="link__color my-3 col-md-auto d-flex justify-content-center" href="/auth/register">Don't have an account?</a>
+            </> :
                 <>
                     {isSubmitted ? <div>User has successfully logged in, redirecting back to homepage...</div> : renderForm}
-                </>}
-            <a className="link__color my-3 col-md-auto d-flex justify-content-center" href="/auth/register">Don't have an account?</a>
+                </>} */}
         </div >
     );
 }

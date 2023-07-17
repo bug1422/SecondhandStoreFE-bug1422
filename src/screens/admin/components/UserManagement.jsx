@@ -11,8 +11,6 @@ export const UserManagement = () => {
     axios.defaults.baseURL = 'https://localhost:7115'
     const cookies = new Cookies();
     const [accounts, setAccounts] = useState([])
-    const [isLoading, setIsLoading] = useState(false)
-    const [isError, setIsError] = useState(false)
     const [currentPage, setCurrentPage] = useState(NaN)
 
     const fetchData = async () => {
@@ -20,27 +18,24 @@ export const UserManagement = () => {
             .then((data) => {
                 setAccounts(data.data)
                 setCurrentPage(1)
-                setIsLoading(false)
             })
-            .catch(e => setIsError(true))
+            .catch((e)=>{console.log(e)})
     }
 
 
     useEffect(() => {
-        setIsLoading(true)
         let cookie = cookies.get('jwt_authorization')
         axios.defaults.headers.common['Authorization'] = 'bearer ' + cookie;
         fetchData()
     }, [])
+
     const lastPage = Math.ceil(accounts.length / itemPerPage);
     const currTableData = useMemo(() => {
         let firstPageIndex = (currentPage - 1) * itemPerPage;
         let lastPageIndex = firstPageIndex + itemPerPage;
         return accounts.slice(firstPageIndex, lastPageIndex)
     }, [currentPage])
-    const errorMessage = (
-        <div className='grey-screen row g-3 mt-3'>Something went wrong. Check connection</div>
-    )
+
 
     const renderAccount = (
         <>
@@ -69,7 +64,7 @@ export const UserManagement = () => {
                                 <td>{account.pointBalance}</td>
                                 <td>{account.isActive ? <div>True</div> : <div>False</div>}</td>
                                 <td className='text-center text-warning'>
-                                    <Link to="/admin/user-profile" state={account.accountId}>
+                                    <Link to="/admin/user-detail" state={account.accountId}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
                                             <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" />
                                             <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" />
@@ -87,9 +82,7 @@ export const UserManagement = () => {
 
     return (
         <div className='d-flex'>
-            <Menu selected='user-management' />
             <div className='flex-1 container text-white bg-body-tertiary w-100 min-vh-100'>
-                {isError && errorMessage}
                 <div className="input-group col-3 border rounded-pill bg-body-secondary search-field my-3">
                     <span className="input-group-text bg-body-secondary border-0 rounded-pill" id="basic-addon1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-search" viewBox="0 0 16 16">
@@ -99,7 +92,7 @@ export const UserManagement = () => {
                     <input type="text" className="form-control border-0 rounded-pill bg-body-secondary" on placeholder="Search" aria-label="Search" aria-describedby="basic-addon1" />
                 </div>
                 <h5 className='text-dark m-3 text-capitalize'>Registered user list</h5>
-                {isLoading ? <LoadingSpinner /> : renderAccount}
+                {renderAccount}
             </div>
         </div>
     )

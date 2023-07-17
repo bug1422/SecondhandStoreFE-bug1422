@@ -14,12 +14,10 @@ const styles = {
     }
 }
 
-export const RevenueManagement = () => {
+export const TransactionManagement = () => {
     axios.defaults.baseURL = 'https://localhost:7115';
     const cookies = new Cookies();
     const [revenues, setRevenues] = useState([])
-    const [error, setError] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
     const [currentPage, setCurrentPage] = useState(NaN)
 
     const fetchData = async () => {
@@ -27,10 +25,8 @@ export const RevenueManagement = () => {
             .then((data) => {
                 setRevenues(data.data)
                 setCurrentPage(1)
-                setIsLoading(false)
             })
             .catch((e) => {
-                setError(e)
                 console.log(e)
             })
     }
@@ -45,7 +41,6 @@ export const RevenueManagement = () => {
     }
 
     useEffect(() => {
-        setIsLoading(true)
         let cookie = cookies.get('jwt_authorization')
         axios.defaults.headers.common['Authorization'] = 'bearer ' + cookie;
         fetchData()
@@ -57,10 +52,6 @@ export const RevenueManagement = () => {
         let lastPageIndex = firstPageIndex + itemPerPage;
         return revenues.slice(firstPageIndex, lastPageIndex)
     }, [currentPage])
-
-    const errorMessage = (
-        <div className='grey-screen row g-3 mt-3'>Something went wrong. Check connection</div>
-    )
 
     const renderRevenue = (
         <>
@@ -104,7 +95,6 @@ export const RevenueManagement = () => {
     return (
         <div className='d-flex'>
             <div className='flex-1 container text-white bg-body-tertiary w-100 min-vh-100'>
-                {error && errorMessage}
                 {/* <div className="input-group col-3 border rounded-pill bg-body-secondary search-field my-3">
                     <span className="input-group-text bg-body-secondary border-0 rounded-pill" id="basic-addon1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-search" viewBox="0 0 16 16">
@@ -114,38 +104,7 @@ export const RevenueManagement = () => {
                     <input type="text" className="form-control border-0 rounded-pill bg-body-secondary" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1" />
                 </div> */}
                 <h5 className='text-dark m-3'>Revenue</h5>
-                {isLoading ? <LoadingSpinner /> : renderRevenue}
-                {/* <div className="row mt-5">
-                    <div className="col">
-                        <h5 className='text-uppercase text-dark text-center'>Revenue chart</h5>
-                        <VictoryBar
-                            style={{
-                                data: { fill: "#0884F5" }
-                            }}
-                            data={[
-                                { quarter: 1, earnings: 13000 },
-                                { quarter: 2, earnings: 16500 },
-                                { quarter: 3, earnings: 14250 },
-                                { quarter: 4, earnings: 19000 }
-                            ]}
-                            x="quarter"
-                            y="earnings" />
-                    </div>
-                    <div className="col d-flex justify-content-center flex-column align-items-center">
-                        <div className="d-flex w-100 justify-content-center">
-                            <button className='btn rounded-pill border button_hover-dark m-3 border-black revenue-btn'>Choose date</button>
-                            <button className='btn rounded-pill border button_hover-dark m-3 border-black revenue-btn'>Choose date</button>
-                        </div>
-                        <div className="d-flex ">
-                            <button className='btn rounded-pill bg-warning button_hover-dark revenue-btn'>Confirm</button>
-                        </div>
-                        <div className="container text-dark p-3 rounded m-3" style={{ background: "#12e265", width: "280px" }}>
-                            <h5>Total Revenue</h5>
-                            <h1>2,000</h1>
-                            <p>↑ Since yesterday</p>
-                        </div>
-                    </div>
-                </div> */}
+                {renderRevenue}
             </div>
         </div>
     )

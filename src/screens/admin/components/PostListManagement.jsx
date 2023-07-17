@@ -20,13 +20,11 @@ export const AdminPostListManagement = () => {
             .then((data) => {
                 setPosts(data.data)
                 setCurrentPage(1)
-                setIsLoading(false)
             })
-            .catch(e => setIsError(e))
+            .catch(e => console.log(e))
     }
 
     useEffect(() => {
-        setIsLoading(true)
         let cookie = cookies.get('jwt_authorization')
         axios.defaults.headers.common['Authorization'] = 'bearer ' + cookie;
         fetchData()
@@ -38,10 +36,6 @@ export const AdminPostListManagement = () => {
         let lastPageIndex = firstPageIndex + itemPerPage;
         return posts.slice(firstPageIndex, lastPageIndex)
     }, [currentPage])
-
-    const errorMessage = (
-        <div className='grey-screen row g-3 mt-3'>Something went wrong. Check connection</div>
-    )
 
     const renderPost = (
         <>
@@ -92,9 +86,7 @@ export const AdminPostListManagement = () => {
 
     return (
         <div className='d-flex'>
-            <Menu selected='post-list' />
             <div className='flex-1 container text-white bg-body-tertiary w-100 min-vh-100'>
-                {isError && errorMessage}
                 {/* <div className="row g-3 mt-3">
                     <div className="col text-center m-3 rounded d-flex justify-content-center align-items-center flex-column p-3 bg-danger">
                         <h5>Rejected Post</h5>
@@ -118,7 +110,7 @@ export const AdminPostListManagement = () => {
                     <input type="text" className="form-control border-0 rounded-pill bg-body-secondary" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1" />
                 </div> */}
                 <h5 className='text-dark m-3'>Register post list</h5>
-                {isLoading ? <LoadingSpinner /> : renderPost}
+                {renderPost}
             </div>
         </div>
     )

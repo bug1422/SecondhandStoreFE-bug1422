@@ -7,6 +7,52 @@
       #fff 100%);
 }
 
+.side-bar-title{
+  padding: 20px 0px;
+  background-color: teal;
+}
+.side-bar-title h4{
+  font-size: 50px;
+}
+.back-button {
+  height: 100%;
+}
+.side-bar-active{
+  background-color: yellowgreen;
+}
+.divider{
+  background-color: black;
+  height: 2px;
+}
+.sbBtn {
+  width: 70px;
+  margin-left: 20px;
+  size: 100%;
+}
+
+.back-button{
+  margin-bottom: 30px;
+}
+
+.graph {
+  height: 30em;
+}
+
+.dashboard-title {
+  margin-bottom: 15px;
+  background-color: #12e265;
+}
+
+.admin-header {
+  flex-direction: column;
+  background-color: teal;
+  font-size: large;
+}
+
+.admin-header-item>button {
+  align-self: flex-start;
+}
+
 .banner_title {
   font-size: 35px;
   font-style: italic;
