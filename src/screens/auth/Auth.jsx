@@ -6,9 +6,9 @@ import "./styles/style.css";
 export const Auth = () => {
     return (
         <>
-            <HeaderFE/>
-            <Outlet/>
-            <FooterFE/>
+            <HeaderFE />
+            <Outlet />
+            <FooterFE />
         </>
     );
 }

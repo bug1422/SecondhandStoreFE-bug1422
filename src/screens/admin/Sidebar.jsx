@@ -16,7 +16,7 @@ import FlagIcon from '@mui/icons-material/Flag';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ReceiptIcon from '@mui/icons-material/Receipt';
-
+import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 
 const drawerWidth = 240;
 
@@ -96,6 +96,15 @@ export const Menu = () => {
                             <Inventory2Icon />
                             <ListItemIcon>
                                 <div>&emsp;Post<br />&emsp;Management</div>
+                            </ListItemIcon>
+                        </ListItemButton>
+                    </div>
+                    <div className={cn(path.includes('exchange') && 'side-bar-active')}>
+
+                        <ListItemButton className='row py-4' onClick={() => { navigate('/admin/exchange-order') }}>
+                            <ConnectWithoutContactIcon />
+                            <ListItemIcon>
+                                <div>&emsp;Exchange Order<br />&emsp;List</div>
                             </ListItemIcon>
                         </ListItemButton>
                     </div>

@@ -1,65 +1,141 @@
-import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import "bootstrap/dist/css/bootstrap.min.css";
 import Avatar from "../../../assets/images/user.png"
-import Cookies from "universal-cookie"
 import axios from "axios"
-import jwt from "jwt-decode"
-import { useEffect } from 'react'
+import { useNavigate } from "react-router-dom";
+import Cookies from 'universal-cookie'
+import { useState, useEffect } from "react";
+import HeaderFE from "../../../components/HeaderFE";
+import FooterFE from "../../../components/FooterFE";
 
 export const UserEdit = () => {
-    const navigate = useNavigate()
-    const cookies = new Cookies()
-    axios.defaults.baseURL = "https://localhost:7115"
+  axios.defaults.baseURL = 'https://localhost:7115'
+  const navigate = useNavigate();
+  const cookies = new Cookies();
+  const [isLoading, setIsLoading] = useState(true)
+  const [isError, setIsError] = useState(false)
+  const [account, setAccount] = useState([])
+  const [phone, setPhone] = useState()
+  const [address, setAddress] = useState()
+  const [error, setError] = useState('')
+  const validPhone = new RegExp('(0[3|5|7|8|9])+([0-9]{8})')
 
-    useEffect(() => {
-        let cookie = cookies.get('jwt_authorization')
-        if (cookie === undefined) {
-            navigate('/', { replace: true })
-        }
-    }, [])
-    return (
-        <div className='p-5'>
-            <button type="button" className="btn btn-light fw-medium text-uppercase mb-5">
-            <Link to="/user-detail">←Back</Link>
-            </button>
-            <div className="row g-4 px-5 h-100">
-                <div className="col-md-4 flex-grow-1 overflow-auto">
-                    <div className="col card h-100 bg-body-tertiary">
-                        <div style={{ background: "#FEC401" }} className="card-body rounded text-uppercase card-main d-flex flex-column align-items-center">
-                            <img className='profile-avt' src={Avatar} alt="" />
-                            <h1 className='fs-medium text-center'>Username</h1>
-                            <h5 className='text-center'>Role: Customer</h5>
-                            <h5 className='text-center'>Account Id: 1</h5>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-8 px-5 flex-grow-1 overflow-auto">
-                    <h3 className='title text-center'>Profile Setting</h3>
-                    <div className="col-md-12 mb-3">
-                    <label for="username" className="form-label text-dark">Full name</label>
-                    <input type="text" className="form-control" id="username" />
-                </div>
+  const fetchData = async () => {
+    await axios.get('/account/get-user-account')
+      .then((data) => {
+        setAccount(data.data)
+        setIsLoading(false)
+        setPhone(data.data.phoneNo)
+        setAddress(data.data.address)
+      })
+      .catch((e) => {
+        console.log(e)
+        setIsError(true)
+        setIsLoading(false)
+      })
+  }
+  const updateAccount = async () => {
+    const response = await axios({
+      url: '/account/update-account',
+      data: {
+        "address": address,
+        "phoneNo": phone
+      },
+      method: 'put'
+    }).catch(e => {
+      setError('Something went wrong!')
+      console.log(e)
+    })
+    if (error === '') navigate('/user-detail?id=' + account.accountId)
+  }
 
-                <div className="col-md-12 mb-3">
-                    <label for="address" className="form-label text-dark">Password</label>
-                    <input type="text" className="form-control" id="password" />                   
-                </div>
-                <div className="col-md-12 mb-3">
-                    <label for="address" className="form-label text-dark">Phone Number</label>
-                    <input type="text" className="form-control" id="number" />                   
-                </div>
-                   <div className="col-md-12 mb-3">
-                    <label for="address" className="form-label text-dark">Address</label>
-                    <input type="text" className="form-control" id="address" />                   
-                </div>
-                </div>
+  function handleSubmit(e) {
+    e.preventDefault()
+    setError('')
+    if (address === '') {
+      setError('Address is empty')
+      return
+    }
+    if (phone === '') {
+      setError('Phone number is empty')
+      return
+    }
+    if (!validPhone.test(phone)) {
+      setError('Phone number is not in correct format')
+      return
+    }
+    if (error === '') {
+      updateAccount()
+    }
+  }
+
+  useEffect(() => {
+    let cookie = cookies.get('jwt_authorization')
+    if (cookie !== undefined) {
+      axios.defaults.headers.common['Authorization'] = 'bearer ' + cookie;
+      fetchData()
+    }
+    else {
+      navigate('/', { replace: true })
+    }
+  }, [])
+
+
+  const profile = (
+    <div className="row justify-content-center">
+      <div className="col-4"></div>
+      <div style={{ width: '60%' }}>
+        <div className="col-md-6 justify-content-center">
+          <div className="card-custom mt-5">
+            <div className='row back-btn'>
+              <button onClick={() => { navigate(-1) }} type="button" className="btn btn-light fw-medium text-uppercase">
+                ←Back
+              </button>
             </div>
-            
-            <div className="col-md-11 d-flex justify-content-end">
-                    <button type="submit" className="btn btn-success text-uppercase mb-5 mt-1">
-                    <Link to="/user-detail">Save</Link>
-                    </button>     
+            <div className="row card-body d-flex align-items-center">
+
+              <div className="row col-12 align-items-center">
+                <img
+                  src={Avatar}
+                  alt="User Avatar"
+                  className="rounded-circle mr-3"
+                />
+                <div>
+                  <h5 className="card-title mb-0">{account.fullName}</h5>
+                  <p className="card-text">{account.email}</p>
+                </div>
+              </div>
+            </div>
+            <h1 className="text-dark">Update contact</h1>
+            <h5 className="font-italic">*Only you and buyer that you have accepted request can see this information</h5>
+            <form onSubmit={(e) => { handleSubmit(e) }} style={{ width: '70%' }} className="mx-2 justify-content-center">
+              <label className="col-12">Phone Number</label>
+              <input value={phone} onChange={(e) => {
+                setError('')
+                setPhone(e.target.value)
+              }} className="col-12" id="phone" name="phone" type="text" />
+              <label className="col-12">Address</label>
+              <textarea value={address} onChange={(e) => {
+                setError('')
+                setAddress(e.target.value)
+              }} className="col-12" rows={2}></textarea>
+              <div className="py-3 col-12 d-flex justify-content-end">
+                <button type="submit" className='confirm-btn' >Submit
+                </button>
+              </div>
+              <p style={{ margin: 'auto', padding: '10px 0px 0px 0px' }} className="error">{error}</p>
+            </form>
+          </div>
         </div>
-        </div>
-    )
+      </div>
+    </div>
+  )
+  return (
+    <>
+      <HeaderFE />
+      <div className="padding-40">
+        {profile}
+      </div>
+      <FooterFE />
+    </>
+  )
 }

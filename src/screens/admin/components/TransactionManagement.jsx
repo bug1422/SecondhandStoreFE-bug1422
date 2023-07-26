@@ -1,15 +1,14 @@
 import { VictoryBar, VictoryTheme } from 'victory';
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { LoadingSpinner } from '../../../components/loading/LoadingSpinner';
-import { Pagination } from '../../../components/pagination/Pagination';
 import Menu from '../Sidebar';
 import Cookies from 'universal-cookie'
 import axios from "axios"
-let itemPerPage = 10
+import { Divider } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const styles = {
     height: {
-        padding : "0",
+        padding: "0",
         height: "30px",
     }
 }
@@ -17,27 +16,42 @@ const styles = {
 export const TransactionManagement = () => {
     axios.defaults.baseURL = 'https://localhost:7115';
     const cookies = new Cookies();
-    const [revenues, setRevenues] = useState([])
-    const [currentPage, setCurrentPage] = useState(NaN)
-
+    const navigate = useNavigate()
+    const [error, setError] = useState('')
+    const [all, setAll] = useState([])
+    const [pending, setPending] = useState([])
+    const [completed, setCompleted] = useState([])
+    const [userProcessingList, setUserProcessingList] = useState([])
+    let VND = new Intl.NumberFormat('vn-VN', {
+        currency: 'VND',
+    });
+    const acceptOrder = async (orderId) => {
+        const response = await axios({
+            url: '/topup/accept-topup',
+            params: { id: orderId },
+            method: 'put'
+        }).catch(e => {
+            setError('Something went wrong!')
+            console.log(e)
+        })
+    }
     const fetchData = async () => {
         await axios.get("/topup/get-all-topup-order")
             .then((data) => {
-                setRevenues(data.data)
-                setCurrentPage(1)
+                const list = data.data.slice(0).reverse()
+                setAll(list)
+                var accountList = []
+                list.map((item) => {
+                    if (accountList.indexOf(item.accountId) === -1 && item.topUpStatus === 'Pending') accountList = [...accountList, item.accountId]
+                })
+                setUserProcessingList(accountList.sort((a, b) => a - b))
+                setCompleted(data.data.filter((item) => {
+                    return item.topUpStatus === "Completed"
+                }))
             })
             .catch((e) => {
                 console.log(e)
             })
-    }
-    const handle_request = async (topupId) => {
-        const response = await axios({
-            url: "/topup/accept-topup",
-            params: { id:  topupId},
-            method: "put"
-        })
-        alert("Success")
-        window.location.reload()
     }
 
     useEffect(() => {
@@ -46,66 +60,114 @@ export const TransactionManagement = () => {
         fetchData()
     }, [])
 
-    const lastPage = Math.ceil(revenues.length / itemPerPage);
-    const currTableData = useMemo(() => {
-        let firstPageIndex = (currentPage - 1) * itemPerPage;
-        let lastPageIndex = firstPageIndex + itemPerPage;
-        return revenues.slice(firstPageIndex, lastPageIndex)
-    }, [currentPage])
+    function accept(id) {
+        console.log(id)
+        acceptOrder(id)
+        fetchData()
+    }
 
-    const renderRevenue = (
-        <>
-            {currTableData.length > 0 ? <>
-                <table className="table custom-table">
-                    <thead>
-                        <tr className='mb-1'>
-                            <th scope="col">Order Id</th>
-                            <th scope="col">Account Id</th>
-                            <th scope="col">Top-up Point</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currTableData.map((revenue) => (
-                            <tr>
-                                <td>{revenue.orderId}</td>
-                                <td>{revenue.accountId}</td>
-                                <td>{revenue.topUpPoint}</td>
-                                <td>{revenue.price}</td>
-                                <td className='text-secondary'>{revenue.topUpDate}</td>
-                                <td className='align-self-start'>{revenue.topUpStatus === "Pending" ? 
-                                <button className='btn btn-primary' onClick={()=>{
-                                    if(window.confirm("Are you sure to switch this request to complete")){
-                                        handle_request(revenue.orderId)
-                                    }
-                                }} style={styles.height}>Pending
-                                </button> : <div>Completed</div>}</td>
+    function acceptAll(pending) {
+        pending.map((item) => {
+            acceptOrder(item.orderId)
+        })
+        fetchData()
+    }
+
+    const renderPending = (pending) => {
+        return (
+            <>
+                <div className='d-flex row'>
+                    <h5 className='text-dark m-3 col-9'>{pending[0].fullName} - {pending[0].email} - Total: {VND.format(pending.reduce((a, v) => a = a + v.Price, 0)).replaceAll(',', '.')} VND - Just Added: { }</h5>
+                    <div className='col-auto row align-items-center'>
+                        <button onClick={() => { navigate('/user-detail?id=' + pending[0].accountId) }} className='btn btn-info profile-btn'>See Profile</button>
+                        <button onClick={() => { acceptAll(pending) }} className='btn btn-info accept-all'>Accept All</button>
+                    </div>
+                </div>
+                <div className='pending-box'>
+                    <table className="table custom-table">
+                        <thead>
+                            <tr className='mb-1'>
+                                <th scope="col">Order Id</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Date Created</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Options</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table >
-                <Pagination currentPage={currentPage} lastPage={lastPage} maxLength={7} setCurrentPage={setCurrentPage} />
-            </> : <h5 className="text-dark m-3 text-capitalize">There's no revenue order!</h5>}
-        </>
+                        </thead>
+                        <tbody>
+                            {pending.map((item) => (
+                                <tr>
+                                    <td>{item.orderId}</td>
+                                    <td>{VND.format(item.price).replaceAll(',', '.')} VND</td>
+                                    <td>{String(item.topUpDate).substring(0, 10)}</td>
+                                    <td>{item.topUpStatus}</td>
+                                    <td><button onClick={() => { accept(item.orderId) }} className='btn btn-info '>Accept</button></td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table >
+                </div >
+                <br />
+            </>
+        )
+    }
 
-    )
-
+    const renderComplete = () => {
+        return (
+            <>
+                {completed.length > 0 ? <>
+                    <div className='list-box'>
+                        <table className="table custom-table">
+                            <thead>
+                                <tr className='mb-1'>
+                                    <th scope="col">Order Id</th>
+                                    <th scope="col">Profile</th>
+                                    <th scope="col">Point</th>
+                                    <th scope="col">Date Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {completed.map((item) => (
+                                    <tr>
+                                        <td>{item.orderId}</td>
+                                        <td>
+                                            <div>
+                                                <td className='profile-row'>
+                                                    <button onClick={() => { navigate('/user-detail?id=' + item.accountId) }} className=' btn btn-info'>View Profile</button>
+                                                </td>
+                                                <td className='profile-row'>
+                                                    <span className=''>{item.fullName} - {item.email}</span>
+                                                </td>
+                                            </div>
+                                        </td>
+                                        <td>{item.topUpPoint}</td>
+                                        <td>{String(item.topUpDate).substring(0, 10)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table >
+                    </div>
+                </> : <h5 className="text-dark m-3 text-capitalize">There's no pending order!</h5>}
+                <br />
+            </>
+        )
+    }
     return (
         <div className='d-flex'>
             <div className='flex-1 container text-white bg-body-tertiary w-100 min-vh-100'>
-                {/* <div className="input-group col-3 border rounded-pill bg-body-secondary search-field my-3">
-                    <span className="input-group-text bg-body-secondary border-0 rounded-pill" id="basic-addon1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-search" viewBox="0 0 16 16">
-                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                        </svg>
-                    </span>
-                    <input type="text" className="form-control border-0 rounded-pill bg-body-secondary" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1" />
-                </div> */}
-                <h5 className='text-dark m-3'>Revenue</h5>
-                {renderRevenue}
+                <h1 className='text-capitalize order-admin-title teal'>Pending Order</h1>
+                <Divider />
+                {userProcessingList.length > 0 ? userProcessingList.map((id) => (
+                    renderPending(all.filter((item) => {
+                        return item.accountId === id && item.topUpStatus === 'Pending'
+                    }))
+                )) : < div className="h4 text-center text-dark m-3 text-capitalize" > There's no pending order!</div>}
+                <br />
+                < h1 className='text-capitalize order-admin-title teal'>Completed Order</h1>
+                <Divider />
+                {completed.length > 0 ? renderComplete() :
+                    < div className="h4 text-center text-dark m-3 text-capitalize" > There's no completed order!</div>}
             </div>
-        </div>
+        </div >
     )
 }

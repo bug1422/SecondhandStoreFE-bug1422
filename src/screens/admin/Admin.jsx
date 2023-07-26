@@ -17,14 +17,15 @@ export const Admin = () => {
             else navigate('/auth/login', { replace: true })
         }
         else {
-            // navigate('/auth/login', { replace: true })
+            navigate('/auth/login', { replace: true })
         }
     }, [])
     return (
         <>
-            <Menu />
-            <Outlet />
-            {/* {isLogged && <Outlet />} */}
+            {isLogged && <>
+                <Menu />
+                <Outlet />
+            </>}
         </>
     )
 }

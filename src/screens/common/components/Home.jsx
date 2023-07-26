@@ -1,113 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import FooterFE from '../../../components/FooterFE'
 import HeaderFE from '../../../components/HeaderFE'
-import ImageBanner from "../../../assets/images/banner_image.svg";
-import ShirtMU from "../../../assets/images/shirt-mu.png";
-import ShirtGame from "../../../assets/images/shirt-game.png";
-import ShirtT1 from "../../../assets/images/shirt-t1.png";
-import Headphone from "../../../assets/images/headphone.png";
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { EffectFade, Navigation } from 'swiper/modules';
+import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import 'swiper/css/navigation';
-import Carousel from 'react-bootstrap/Carousel';
 import Alert from 'react-bootstrap/Alert';
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
-import { ListGroup } from 'react-bootstrap';
-import { Nav, NavItem } from 'react-bootstrap';
+import Card from 'react-bootstrap/Card';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const data = {
-    items: [
-        {
-            id: 1,
-            type: "clothes",
-            name: "MU Shirt",
-            price: 10,
-            thumbnail: ShirtMU
-        },
-        {
-            id: 2,
-            type: "clothes",
-            name: "Game Shirt",
-            price: 20,
-            thumbnail: ShirtT1
-        },
-        {
-            id: 3,
-            type: "clothes",
-            name: "Shirt Game",
-            price: 30,
-            thumbnail: ShirtGame
-        },
-        {
-            id: 4,
-            type: "electric",
-            name: "Headphone 1",
-            price: 40,
-            thumbnail: Headphone
-        },
-        {
-            id: 5,
-            type: "clothes",
-            name: "MU Shirt 1",
-            price: 50,
-            thumbnail: ShirtMU
-        },
-        {
-            id: 6,
-            type: "clothes",
-            name: "Game Shirt 1",
-            price: 60,
-            thumbnail: ShirtT1
-        },
-        {
-            id: 7,
-            type: "clothes",
-            name: "Shirt Game 2",
-            price: 70,
-            thumbnail: ShirtGame
-        },
-        {
-            id: 8,
-            type: "electric",
-            name: "Headphone 2",
-            price: 80,
-            thumbnail: Headphone
-        },
-        {
-            id: 9,
-            type: "clothes",
-            name: "MU Shirt 3",
-            price: 90,
-            thumbnail: ShirtMU
-        },
-        {
-            id: 10,
-            type: "clothes",
-            name: "Game Shirt 4",
-            price: 80,
-            thumbnail: ShirtT1
-        },
-        {
-            id: 11,
-            type: "clothes",
-            name: "Shirt Game 4",
-            price: 70,
-            thumbnail: ShirtGame
-        },
-        {
-            id: 12,
-            type: "electric",
-            name: "Headphone 3",
-            price: 60,
-            thumbnail: Headphone
-        }
-    ]
-}
 
 export const UserHome = () => {
     axios.defaults.baseURL = "https://localhost:7115"
@@ -117,26 +20,21 @@ export const UserHome = () => {
     const [items, setItems] = useState([]);
     const [filteredList, setFilteredList] = useState([]);
     let VND = new Intl.NumberFormat('vn-VN', {
-        style: 'currency',
         currency: 'VND',
     });
-    useEffect(() => {
-        setItems(
-            data.items.filter((item) => item.type.includes(type))
-        )
-    }, [type])
 
     const fetchData = async () => {
-        await axios.get("/posts/get-post-list")
+        await axios.get("/posts/get-all-active-post-list")
             .then((data) => {
                 setItems(data.data.slice(0).reverse())
                 setFilteredList(data.data.slice(0).reverse())
-                
+
             })
             .catch((e) => { console.log(e) })
     }
 
     useEffect(() => {
+
         fetchData()
     }, [])
 
@@ -147,88 +45,41 @@ export const UserHome = () => {
         setFilteredList(updatedList)
     }, [type])
 
-    const handleSortType = (category) => {
-        let sortedItems = [];
-
-        switch (category) {
-            case "nameAZ":
-                sortedItems = items.sort((a, b) => a.name.localeCompare(b.name));
-                break;
-            case "nameZA":
-                sortedItems = items.sort((a, b) => b.name.localeCompare(a.name));
-                break;
-            case "priceAZ":
-                sortedItems = items.sort((a, b) => a.price - b.price);
-                break;
-            case "priceZA":
-                sortedItems = items.sort((a, b) => b.price - a.price);
-                break;
-            default:
-                sortedItems = items;
-        }
-        setItems([...sortedItems]);
-
-    }
-    const [paginatedItems, setPaginatedItems] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 6;
-    const paginate = (items, currentPage, itemsPerPage) => {
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        return items.slice(startIndex, startIndex + itemsPerPage);
-    }
-    const handlePageChange = (newPage) => {
-        setCurrentPage(newPage);
-    };
-    useEffect(() => {
-        setCurrentPage(1);
-        setPaginatedItems(paginate(items, currentPage, itemsPerPage));
-    }, [items])
-    useEffect(() => {
-        setPaginatedItems(paginate(items, currentPage, itemsPerPage));
-    }, [currentPage])
-
-    return (
-        <>
-            <HeaderFE />
-            <div className="position-relative admin__home_banner">
-                <h3 className="p-5 banner_title">
-                    Second hand exchange where you can find amazing things
-                </h3>
-                <img className="admin__home_banner_image position-absolute top-0 end-0 h-100" src={ImageBanner} alt="" />
-            </div>
-
+    const oldOne = (
+        <div className='padding-40'>
             <div className="container">
                 <div className="row">
                     <div className="col-md-3">
                         <ul className="list-group">
-
-
                             <ul className="list-group">
-                                <li className="list-group-item" onClick={() => { navigate('/search') }} style={{ background: "#FFDB58", cursor: "pointer" }}>
+                                <li className="list-group-item" onClick={() => { navigate('/selling') }} style={{ background: "#FFDB58", cursor: "pointer" }}>
                                     <i className="fas fa-tshirt"></i> All
                                 </li>
-                                <li className="list-group-item" onClick={() => { navigate('/search', { state: "Clothes" }) }} style={{ background: "#FFDB58", cursor: "pointer" }}>
+                                <li className="list-group-item" onClick={() => { navigate('/selling', { state: "Clothes" }) }} style={{ background: "#FFDB58", cursor: "pointer" }}>
                                     <i className="fas fa-tshirt"></i> Clothes
                                 </li>
-                                <li className="list-group-item" onClick={() => { navigate('/search', { state: "Electrics" }) }} style={{ background: "#FFDB58", cursor: "pointer" }}>
-                                    <i className="fas fa-bolt"></i> Electrics
+                                <li className="list-group-item" onClick={() => { navigate('/selling', { state: "Accessories" }) }} style={{ background: "#FFDB58", cursor: "pointer" }}>
+                                    <i className="fas fa-tshirt"></i> Accessories
                                 </li>
-                                <li className="list-group-item" onClick={() => { navigate('/search', { state: "Book" }) }} style={{ background: "#FFDB58", cursor: "pointer" }}>
+                                <li className="list-group-item" onClick={() => { navigate('/selling', { state: "Electronics" }) }} style={{ background: "#FFDB58", cursor: "pointer" }}>
+                                    <i className="fas fa-bolt"></i> Electronics
+                                </li>
+                                <li className="list-group-item" onClick={() => { navigate('/selling', { state: "Books" }) }} style={{ background: "#FFDB58", cursor: "pointer" }}>
                                     <i className="fas fa-book"></i> Books
                                 </li>
-                                <li className="list-group-item" onClick={() => { navigate('/search', { state: "Traditional Instruments" }) }} style={{ background: "#FFDB58", cursor: "pointer" }}>
-                                    <i className="fas fa-guitar"></i> Traditional Instruments
+                                <li className="list-group-item" onClick={() => { navigate('/selling', { state: "Musical Instruments" }) }} style={{ background: "#FFDB58", cursor: "pointer" }}>
+                                    <i className="fas fa-guitar"></i> Musical Instruments
                                 </li>
-                                <li className="list-group-item" onClick={() => { navigate('/search', { state: "Learning Tools" }) }} style={{ background: "#FFDB58", cursor: "pointer" }}>
-                                    <i className="fas fa-pencil-ruler"></i> Learning Tools
+                                <li className="list-group-item" onClick={() => { navigate('/selling', { state: "School Supplies" }) }} style={{ background: "#FFDB58", cursor: "pointer" }}>
+                                    <i className="fas fa-pencil-ruler"></i> School Supplies
                                 </li>
-                                <li className="list-group-item" onClick={() => { navigate('/search', { state: "Others" }) }} style={{ background: "#FFDB58", cursor: "pointer" }}>
+                                <li className="list-group-item" onClick={() => { navigate('/selling', { state: "Others" }) }} style={{ background: "#FFDB58", cursor: "pointer" }}>
                                     <i className="material-icons"></i> Others
                                 </li>
                             </ul>
                         </ul>
                     </div>
-                    <div className="col-md-9">
+                    <div className="col-md-9 mh-100 padding-40">
                         <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel" data-interval="3000">
                             <ol className="carousel-indicators">
                                 <li data-target="#carouselExampleIndicators" data-slide-to="0" className="active"></li>
@@ -259,17 +110,6 @@ export const UserHome = () => {
                 </div>
             </div>
             <div className="container my-3">
-                {/* <Tabs
-                    defaultActiveKey="profile"
-                    id="justify-tab-example"
-                    className="mb-8"
-                >
-                    <Tab onClick={() => { setType("") }} eventKey="all" title="all">
-                    </Tab>
-                    <Tab onClick={() => { setType("Donate") }} eventKey="donating" title="donating">
-                    </Tab>
-                </Tabs> */}
-
                 <Swiper
                     modules={[Navigation]}
                     slidesPerView={4}
@@ -286,8 +126,8 @@ export const UserHome = () => {
                             onMouseMove={(e) => e.preventDefault()} // ngăn chặn sự kiện mặc định khi di chuyển chuột
                             onMouseUp={(e) => e.preventDefault()} // ngăn chặn sự kiện mặc định khi thả chuột trái
                         >
-                            <a href={'/post-detail?id=' + item.postId}>
-                                <img src={item.image} alt="" style={{ width: '100%' }} />
+                            <a className='post-image' href={'/post-detail?id=' + item.postId}>
+                                <Card.Img variant="top" className='img-fluid' src={item.images[0].ImageUrl} style={{ width: '100%', height: '250px', objectFit: 'cover' }} />
                             </a>
                         </SwiperSlide>
                     ))}
@@ -306,23 +146,34 @@ export const UserHome = () => {
                 <div class="container">
                     <div class="row mx-auto">
                         {filteredList.slice(0, 8).map((item) => (
-                            <div class="col-6 col-md-3">
-                                <div class="card h-100 border-0 text-center">
-                                    <img src={item['image']} class="card-img-top" alt="..." />
-                                    <div class="card-body">
-                                        <h1 class="card-title">{item['productName']}</h1>
-                                        <h3 class="card-text">{VND.format(item['price'])}</h3>
-                                    </div>
+                            <>
+                                <div class="col-6 col-md-3 post-padding">
+                                    <a href={"/post-detail?id=" + item.postId} style={{ textDecoration: 'none' }}>
+                                        <Card style={{ width: '16rem' }}>
+                                            <Card.Img variant="top" className='img-fluid' src={item.images[0].ImageUrl} style={{ width: '100%', height: '250px', objectFit: 'cover' }} />
+                                            <Card.Body>
+                                                <Card.Title style={{ color: 'black' }}>{item.productName}</Card.Title>
+                                            </Card.Body>
+                                            <Card.Body>
+                                                <a href={'/post-detail?id=' + item.postId} style={{ textDecoration: 'none' }}>
+                                                    <Card.Link style={{ color: 'orange', fontSize: '20px' }}>{item.isDonated ? "Donating" : VND.format(item.price).replaceAll(',', '.') + " VND"}</Card.Link>
+                                                </a>
+                                            </Card.Body>
+                                        </Card>
+                                    </a>
                                 </div>
-                            </div>
+                            </>
                         ))}
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12">
-                <h1>
-                </h1>
-            </div>
+        </div>
+    )
+
+    return (
+        <>
+            <HeaderFE />
+            {oldOne}
             <FooterFE />
         </>
     )

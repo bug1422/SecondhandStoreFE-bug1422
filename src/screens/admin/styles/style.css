@@ -6,31 +6,59 @@
       #fff 100%,
       #fff 100%);
 }
+.pending-box{
+  min-height: auto !important;
+  height: 20em !important;
+}
 
-.side-bar-title{
+.list-box{
+  height: 30em !important;
+}
+
+.profile-row{
+  border: none !important;
+}
+.profile-btn{
+  color: black !important;
+  background-color:#fec401 !important;
+}
+.accept-all{
+  font-weight: 700 !important;  
+}
+.order-admin-title {
+  text-align: center;
+  font-size: 70px;
+}
+
+.side-bar-title {
   padding: 20px 0px;
   background-color: teal;
 }
-.side-bar-title h4{
+
+.side-bar-title h4 {
   font-size: 50px;
 }
+
 .back-button {
   height: 100%;
 }
-.side-bar-active{
+
+.side-bar-active {
   background-color: yellowgreen;
 }
-.divider{
+
+.divider {
   background-color: black;
   height: 2px;
 }
+
 .sbBtn {
   width: 70px;
   margin-left: 20px;
   size: 100%;
 }
 
-.back-button{
+.back-button {
   margin-bottom: 30px;
 }
 

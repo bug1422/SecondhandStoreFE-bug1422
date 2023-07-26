@@ -5,41 +5,32 @@ import Cookies from 'universal-cookie'
 import axios from "axios"
 import HeaderFE from "../../../components/HeaderFE";
 import FooterFE from "../../../components/FooterFE";
-import { Pagination } from '@mui/material';
+import { Dialog, DialogTitle, List, ListItem, Pagination } from '@mui/material';
 import { toLowerCaseNonAccentVietnamese } from '../../nonAccentVietnamese.js'
 import cn from 'classnames'
 import { Card, Stack } from "react-bootstrap";
 
 const itemsPerPage = 8;
 
-export const PostListManagement = () => {
+export const PostPurchasedManagement = () => {
     axios.defaults.baseURL = 'https://localhost:7115'
     const navigate = useNavigate()
     const cookies = new Cookies()
     const [all, setAll] = useState([])
-    const [pending, setPending] = useState([])
-    const [accepted, setAccepted] = useState([])
-    const [rejected, setRejected] = useState([])
-    const [completed, setCompleted] = useState([])
     const [isError, setIsError] = useState(false)
     const [filteredList, setFilteredList] = useState([])
     const [status, setStatus] = useState('All');
-    const [isLoading, setIsLoading] = useState(true)
+
     let VND = new Intl.NumberFormat('vn-VN', {
         currency: 'VND',
     });
 
     const fetchData = async () => {
-        await axios.get('/posts/get-user-posts')
+        await axios.get('/get-purchased-post')
             .then((data) => {
                 const list = data.data.slice(0).reverse()
                 setAll(list)
-                setPending(list.filter((item) => { return item.statusName === 'Pending' }))
-                setAccepted(list.filter((item) => { return item.statusName === 'Accepted' }))
-                setRejected(list.filter((item) => { return item.statusName === 'Rejected' }))
-                setCompleted(list.filter((item) => { return item.statusName === 'Completed' }))
                 setFilteredList(list)
-                setIsLoading(false)
             })
             .catch(e => setIsError(e))
     }
@@ -56,24 +47,7 @@ export const PostListManagement = () => {
         const formData = new FormData(e.currentTarget)
         const data = Object.fromEntries(formData)
         console.log(data)
-        var updatedList
-        switch (status) {
-            case 'All':
-                updatedList = [...all]
-                break
-            case 'Pending':
-                updatedList = [...pending]
-                break
-            case 'Accepted':
-                updatedList = [...accepted]
-                break
-            case 'Rejected':
-                updatedList = [...rejected]
-                break
-            case 'Completed':
-                updatedList = [...completed]
-                break
-        }
+        var updatedList = [...all]
         if (data['keyword'] !== '') {
             updatedList = updatedList.filter((item) => {
                 let name = toLowerCaseNonAccentVietnamese(item.productName)
@@ -114,23 +88,6 @@ export const PostListManagement = () => {
                         setFilteredList(all)
                         setStatus('All')
                     }} class={cn("nav-link ", status == 'All' && 'active')} id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="">All ({all.length})</button>
-                    <button onClick={() => {
-                        setFilteredList(pending)
-                        setStatus('Pending')
-                    }} class={cn("nav-link ", status == 'Pending' && 'active')} id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected=''>Pending Post ({pending.length})</button>
-                    <button onClick={() => {
-                        setFilteredList(accepted)
-                        setStatus('Accepted')
-                    }} class={cn("nav-link ", status == 'Accepted' && 'active')} id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected=''>Accepted Post ({accepted.length})</button>
-                    <button onClick={() => {
-                        setFilteredList(rejected)
-                        setStatus('Rejected')
-                    }} class={cn("nav-link ", status == 'Rejected' && 'active')} id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected=''>Rejected Post ({rejected.length})</button>
-                    <button onClick={() => {
-                        setFilteredList(completed)
-                        setStatus('Completed')
-                    }} class={cn("nav-link ", status == 'Completed' && 'active')} id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected=''>Completed Post ({completed.length})</button>
-                    <div></div>
                 </div>
             </nav>
             <div className="">
@@ -151,18 +108,6 @@ export const PostListManagement = () => {
                                     case 'All':
                                         setFilteredList(all)
                                         break
-                                    case 'Pending':
-                                        setFilteredList(pending)
-                                        break
-                                    case 'Accepted':
-                                        setFilteredList(accepted)
-                                        break
-                                    case 'Rejected':
-                                        setFilteredList(rejected)
-                                        break
-                                    case 'Completed':
-                                        setFilteredList(completed)
-                                        break
                                 }
                             }} style={{ marginTop: '1%' }} type="button" class="btn btn-primary">Clear
                             </button>
@@ -176,18 +121,18 @@ export const PostListManagement = () => {
                     </div>
                 </form>
                 <div className="list-box">
-                    {filteredList.length === 0 ? <h5 className="text-dark m-3 text-capitalize">You have no post!</h5> : <>
+                    {filteredList.length === 0 ? <h5 className="text-dark m-3 text-capitalize">You haven't complete any purchase :/, go buy some</h5> : <>
                         <div className="row mx-auto">
                             {paginatedItems.map((item) => (
                                 <div class="col-md-3">
                                     <div className="post-list-card">
                                         <a href={"/post-detail?id=" + item.postId} style={{ textDecoration: 'none' }}>
-                                            <Card.Img variant="top" className='img-fluid' src={item.images[0].ImageUrl} style={{ width: '100%', height: '150px', objectFit: 'cover' }} />
+                                            <Card.Img variant="top" className='img-fluid' src={item.image} style={{ width: '100%', height: '150px', objectFit: 'cover' }} />
                                             <Card.Body>
                                                 <div style={{ color: 'black' }}><strong>{item.productName}</strong></div>
                                                 <div style={{ color: 'black' }}>{String(item.createdDate).substring(0, 10)}</div>
                                                 <div style={{ color: 'orange', fontSize: '20px' }}>{VND.format(item.price).replaceAll(',', '.')} VND</div>
-                                                <div className={cn(item.statusName === 'Completed' ? 'text-secondary' : item.statusName === 'Rejected' ? 'text-danger' : item.statusName === 'Accepted' ? 'text-success' : 'text-dark')}>{item.statusName}</div>
+                                                <div className={cn(item.statusName === 'Completed' ? 'text-secondary' : 'text-success')}>{item.statusName}</div>
                                             </Card.Body>
                                         </a>
                                     </div>
@@ -205,8 +150,15 @@ export const PostListManagement = () => {
             <HeaderFE />
             <div className='d-flex padding-bot'>
                 <div className='flex-1 container text-white bg-body-tertiary w-100 min-vh-100'>
-                    <h5 className='text-dark m-3'>My Posts</h5>
-                    {isLoading ? <LoadingSpinner /> : renderPost}
+                    <h5 className='text-dark m-3'>Purchased Posts</h5>
+                    {filteredList.length === 0 ?
+                        <div className='create-post d-flex justify-content-center align-items-center'>
+                            <div className=''>
+                                <span className='col-12'><h5 className='text-dark'>You haven't purchased anything, go buy some :/</h5>
+                                </span>
+                                <div className='col-12 text-dark d-flex justify-content-center'><button onClick={() => {navigate('/selling')}} className="btn btn-info">Go to Selling List</button><button onClick={() => {navigate('/donating')}} className="btn btn-warning">Go to Donating List</button></div>
+                            </div>
+                        </div> : renderPost}
                 </div>
             </div>
             <FooterFE />

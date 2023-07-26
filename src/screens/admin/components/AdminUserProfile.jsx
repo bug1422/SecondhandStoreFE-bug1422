@@ -20,14 +20,14 @@ const customStyles = {
 export const AdminUserProfile = () => {
     axios.defaults.baseURL = 'https://localhost:7115'
     const location = useLocation()
-    const accountId = location.state
+    const AccountId = location.state
     const navigate = useNavigate();
     const cookies = new Cookies();
     const [isLoading, setIsLoading] = useState(true)
     const [account, setAccount] = useState([])
     const [modalIsOpen, setIsOpen] = useState(false);
     const fetchData = async () => {
-        await axios.get('/account/get-account-by-id', { params: { id: accountId } })
+        await axios.get('/account/get-account-by-id', { params: { id: AccountId } })
             .then((data) => {
                 setAccount(data.data)
                 setIsLoading(false)
@@ -37,11 +37,11 @@ export const AdminUserProfile = () => {
     const updateStatus = async () => {
         const response = await axios({
             url: '/account/toggle-account-status',
-            params: { id: accountId },
+            params: { id: AccountId },
             method: 'put'
         })
         if (response.data.body) alert("something went wrong")
-        else alert("Successfully " + (account.isActive ? "deactivated" : "activated") + " this user")
+        else alert("Successfully " + (account.IsActive ? "deactivated" : "activated") + " this user")
     }
     useEffect(() => {
         let cookie = cookies.get('jwt_authorization')
@@ -77,21 +77,21 @@ export const AdminUserProfile = () => {
                         <div style={{ background: "#FEC401" }} className="card-body rounded text-uppercase card-main d-flex flex-column align-items-center">
                             <img className='profile-avt' src={Avatar} alt="" />
                             <h1 className='fs-medium text-center'>Username</h1>
-                            <h5 className='text-center'>Role: {account.roleId}</h5>
-                            <h5 className='text-center'>Account Id: {account.accountId}</h5>
-                            {account.isActive ? <h5 className="text-primary">Active</h5> : <h5 className="text-secondary">Deactivated</h5>}
+                            <h5 className='text-center'>Role: {account.RoleId}</h5>
+                            <h5 className='text-center'>Account Id: {account.AccountId}</h5>
+                            {account.IsActive ? <h5 className="text-primary">Active</h5> : <h5 className="text-secondary">Deactivated</h5>}
                         </div>
                     </div>
                 </div>
                 <div className="col-md-6 px-5 flex-grow-1 overflow-auto">
                     <h3 className='title text-center'>User Information</h3>
-                    <p className=''>NAME : {account.fullname}</p>
-                    <p className=''>ADRESS : {account.address}</p>
-                    <p className=''>PHONE NUMBER : {account.phoneNo}</p>
-                    <p className=''>GMAIL : {account.email}</p>
+                    <p className=''>NAME : {account.Fullname}</p>
+                    <p className=''>ADRESS : {account.Address}</p>
+                    <p className=''>PHONE NUMBER : {account.PhoneNo}</p>
+                    <p className=''>GMAIL : {account.Email}</p>
                     {isNaN(account.reportReporters) && <p className=''>REASON: Scam, toxic, flake, unreal prices</p>}
                     <div className="popup">
-                        {account.isActive ?
+                        {account.IsActive ?
                             <button type="button" className="btn btn-danger" onClick={openModal}>Deactive</button> :
                             <button type="button" className="btn btn-success" onClick={openModal}>Activate</button>
                         }
@@ -103,7 +103,7 @@ export const AdminUserProfile = () => {
                             contentLabel="Example Modal"
                         >
                             <span>
-                                <h2>Are you sure to {account.isActive ? "deactivate" : "activate"} this user</h2>
+                                <h2>Are you sure to {account.IsActive ? "deactivate" : "activate"} this user</h2>
                             </span>
                             <button type="button" className="btn btn-success" onClick={handleModal}>Yes</button>
                             <button type="button" className="btn btn-danger" onClick={closeModal}>No</button>

@@ -1,61 +1,37 @@
-import Modal from 'react-modal'
-import "../styles/post.css"
 import React from 'react'
-import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react'
 import Cookies from 'universal-cookie'
 import axios from "axios"
+import 'swiper/css';
+import 'swiper/css/effect-fade';
+import 'swiper/css/navigation';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import Card from 'react-bootstrap/Card';
+import { Dialog, DialogTitle } from '@mui/material'
 
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-    },
-};
 export const AdminPostDetail = () => {
     axios.defaults.baseURL = 'https://localhost:7115'
-    const location = useLocation()
-    const postId = location.state
+    const queryParameter = new URLSearchParams(window.location.search)
+    const postId = queryParameter.get("id")
     const navigate = useNavigate();
     const cookies = new Cookies();
+    const [error, setError] = useState('')
+    const [showDesc, setShowDesc] = useState(false)
     const [post, setPost] = useState([])
-    const [modalIsOpen, setIsOpen] = useState(false);
-    const [choice, setChoice] = useState('');
+    const [images, setImages] = useState([])
+    let VND = new Intl.NumberFormat('vn-VN', {
+        currency: 'VND',
+    });
+
     const fetchData = async () => {
         await axios.get('/posts/get-post-by-id', { params: { id: postId } })
             .then((data) => {
                 setPost(data.data)
+                setImages(data.data.images)
             })
-            .catch(e => console.log(e))
-    }
-    const updatePost = async () => {
-        const response = await axios({
-            url: '/posts/toggle-post-status',
-            data: {
-                choice: choice,
-                id: postId
-            },
-            method: 'put'
-        })
-        if (response.data.body) alert("something went wrong")
-        else alert("Successfully " + choice + " this user")
-    }
-
-    function openModal() {
-        setIsOpen(true)
-    }
-
-    function handleModal() {
-        updatePost()
-        window.location.reload()
-        setIsOpen(false)
-    }
-    function closeModal() {
-        setIsOpen(false)
+            .catch(e => setError(error))
     }
 
     useEffect(() => {
@@ -68,67 +44,89 @@ export const AdminPostDetail = () => {
             navigate('/auth/login', { replace: true })
         }
     }, [])
-
-    const handlePending = (
-        <>
-            {post.postStatusName === 'Pending' &&
-                <>
-                    <button className='text-success' value='accept' onClick={(e) => {
-                        setChoice('accept')
-                        openModal()
-                    }}>Accept</button>
-                    <button className='text-danger' value='deny' onClick={(e) => {
-                        setChoice('deny')
-                        openModal()
-                    }}>Deny</button>
-                    <Modal
-                        isOpen={modalIsOpen}
-                        // onAfterOpen={afterOpenModal}
-                        onRequestClose={closeModal}
-                        style={customStyles}
-                        contentLabel="Example Modal"
-                    >
-                        <span>
-                            <p>Are you sure to {choice} this post?</p>
-                        </span>
-                        <button type="button" className="btn btn-success" onClick={handleModal}>Yes</button>
-                        <button type="button" className="btn btn-danger" onClick={closeModal}>No</button>
-                    </Modal>
-                </>
-            }
-        </>
-    )
     return (
-        <div className='p-5'>
-            <button type="button" className="btn btn-light fw-medium text-uppercase mb-5">
-                <a href="/admin/post-list">←Back</a>
-            </button>
-            <div className="row g-3 px-5">
-                <div className="col-md-6">
-                    <div className="col card mb-5 bg-body-tertiary">
-                        <div className="card-body text-uppercase card-main">
-                            <h1 className='fs-medium text-center'>
-                                <img className="img-thumbnail Responsive image" src={post.image}></img>
-                            </h1>
+        <>
+            <div className='post-detail'>
+                <div className='row'>
+                    <div className='col-2 back-btn'>
+                        <button onClick={() => { navigate(-1) }} type="button" className="btn btn-light fw-medium text-uppercase mb-5">
+                            ←Back
+                        </button>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-5 text-right">
+                        <div className="row col-md-12 d-flex justify-content-end">
+                            {images.length === 0 ? <div>No available picture</div> :
+                                <a className='post-detail-card d-flex justify-content-center' href={images[0].ImageUrl} target='_blank'>
+                                    <img className="img-fluid post-img" src={images[0].ImageUrl}></img>
+                                </a>
+                            }
+                            <div style={{ width: '70%' }} className="my-3">
+                                <Swiper
+                                    modules={[Navigation]}
+                                    slidesPerView={3}
+                                    spaceBetween={15}
+                                    navigation
+                                    grabCursor={true} // bật tính năng hiển thị con trỏ kéo chuột
+                                    mousewheel={true} // bật tính năng kéo chuột bằng bánh xe
+                                    onSlideChange={() => console.log('slide change')}
+                                    onSwiper={(swiper) => console.log(swiper)}
+                                >
+                                    <>
+                                        {images.slice(1).map((image) => (
+                                            <SwiperSlide
+                                                onMouseDown={(e) => e.preventDefault()} // ngăn chặn sự kiện mặc định khi nhấn chuột trái
+                                                onMouseMove={(e) => e.preventDefault()} // ngăn chặn sự kiện mặc định khi di chuyển chuột
+                                                onMouseUp={(e) => e.preventDefault()} // ngăn chặn sự kiện mặc định khi thả chuột trái
+                                            >
+                                                <a href={image.ImageUrl} target='_blank'>
+                                                    <Card.Img variant="top" className='img-fluid' src={image.ImageUrl} style={{ width: '150px', height: '120px' }} />
+                                                </a>
+                                            </SwiperSlide>
+                                        ))}
+                                    </>
+                                </Swiper>
+                            </div>
                         </div>
                     </div>
+                    <div className="col-md-7 px-5">
+                        <div className='row'>
+                            <h1 className='col-4 text-capitalize text-dark'>{post.productName}</h1>
+                            <h3 className='title col-8 status-post-accepted'>Available</h3>
+                            <h3 className="col-4"><strong>{VND.format(post.price)} VND</strong></h3>
+                            <h4 className='col-md-auto'>
+                                <strong>
+                                    Seller:&nbsp;
+                                    <a className='to-user-profile' href={'/user-detail?id=' + post.accountId}>
+                                        <span className="post-detail">
+                                            {post.fullname}
+                                        </span>
+                                    </a>
+                                </strong>
+                            </h4>
+                        </div>
+                        <div className="row">
+                        </div>
+                        <h4 className='text-dark'>Description <button onClick={() => { setShowDesc(true) }} style={{ height: '30px', paddingTop: '8px' }} className='h5 btn btn-outline-dark'>View All</button></h4>
+                        <div className='col-md-12 h4 row pb-4'>
+                            <div style={{ width: '80%', height: '150px', overflowY: 'scroll', border: '1px solid grey' }}>{post.description}
+                            </div>
+                        </div>
+                        <div className='row col-md-12'>
+                            <div className='col-4'>
+                                <button style={{ width: '250px', borderRadius: '8px' }} className="post-detail-btn h3">Request this product</button>
+                            </div>
+                        </div>
+                    </div >
                 </div>
-                <div className="col-md-6 px-5">
-                    <h3 className='title'>Product Name: {post.productName}</h3>
-                    <h3 className="title">Status: {post.postStatusName}</h3>
-                    <div className="row">
-                        <h5 className="col">Price: {post.price}</h5>
-                        <h5 className="col">Category: {post.categoryName}</h5>
-                    </div>
-                    <h3 className='title'>Description</h3>
-                    <p>{post.description}</p>
-                    <h3 className='text-danger'>Contact: {post.address}</h3>
-                    <h3 className='text-danger'>Phone Number: {post.phoneNo}</h3>
-                    <h3 className='text-danger'>Email: {post.email}</h3>
-
-                    {handlePending}
-                </div>
-            </div>
-        </div >
+            </div >
+            <Dialog style={{ overflowY: 'auto' }} onClose={() => { setShowDesc(false) }} open={showDesc}>
+                <DialogTitle style={{ width: '650px', height: '600px' }}>
+                    {post.description}
+                </DialogTitle>
+                <button style={{ width: '100px' }} onClick={() => { setShowDesc(false) }} className='btn-black py-1'>Back</button>
+            </Dialog>
+        </>
     )
 }
