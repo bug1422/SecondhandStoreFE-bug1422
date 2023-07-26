@@ -23,6 +23,7 @@ export const PostDetail = () => {
     const navigate = useNavigate()
     const cookies = new Cookies()
     const [isLoading, setLoading] = useState(false)
+    const [isLogged, setLogged] = useState(false)
     const [showDesc, setShowDesc] = useState(false)
     const [Owner, setOwner] = useState('')
     const [result, setResult] = useState('')
@@ -44,11 +45,16 @@ export const PostDetail = () => {
                 console.log(e)
                 setError('Something went wrong')
             })
-        await axios.get('/get-all-request-list').then((data) => {
-            data.data.map((item) => {
-                if (String(item.postId) === postId && request === '') setRequest(item.orderStatusName)
+        if (isLogged) {
+            await axios.get('/get-all-request-list').then((data) => {
+                data.data.map((item) => {
+                    if (String(item.postId) === postId && request === '') setRequest(item.orderStatusName)
+                })
+            }).catch((e) => {
+                console.log(e)
+                setError('Something went wrong')
             })
-        })
+        }
     }
     const sendRequest = async () => {
         await axios.post('/buyer-send-exchange-request', {
@@ -71,11 +77,9 @@ export const PostDetail = () => {
         if (cookie !== undefined) {
             axios.defaults.headers.common['Authorization'] = 'bearer ' + cookie
             setOwner(jwt(cookie)['accountId'])
-            fetchData()
+            setLogged(true)
         }
-        else {
-            navigate('/auth/login', { replace: true })
-        }
+        fetchData()
     }, [])
 
     const [open, setOpen] = useState(false)
@@ -114,7 +118,7 @@ export const PostDetail = () => {
     )
 
     const renderPost = (
-        <div style={{height:'550px'}} className='post-detail padding-40'>
+        <div style={{ height: '600px' }} className='post-detail padding-40'>
             <div className='row'>
                 <div className='col-2 back-btn'>
                     <button onClick={() => { navigate(-1) }} type="button" className="btn btn-light fw-medium text-uppercase mb-5">
@@ -134,7 +138,7 @@ export const PostDetail = () => {
                         <div className="row col-md-12 d-flex justify-content-end">
                             {images.length === 0 ? <div>No available picture</div> :
                                 <a className='post-detail-card d-flex justify-content-center' href={images[0].ImageUrl} target='_blank'>
-                                    <img className="img-fluid post-img" src={images[0].ImageUrl}></img>
+                                    <img style={{ width: '300px', height: '300px' }} className="img-fluid post-img" src={images[0].ImageUrl}></img>
                                 </a>
                             }
                         </div>
@@ -190,9 +194,12 @@ export const PostDetail = () => {
                                             </div>
                                         </div>
                                         :
-                                        post.statusName !== "Completed" ? <></> :
+                                        post.statusName === "Completed" ? <></> :
                                             <div className='col-4'>
-                                                <button style={{ width: '250px', borderRadius: '8px' }} onClick={() => { handleClickOpen() }} className="post-detail-btn h3">Request this product</button>
+                                                <button style={{ width: '250px', borderRadius: '8px' }} onClick={() => {
+                                                    if (isLogged) handleClickOpen()
+                                                    else navigate('/auth/login')
+                                                }} className="post-detail-btn h3">Request this product</button>
                                             </div>
                                 }
                             </div>

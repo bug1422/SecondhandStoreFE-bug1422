@@ -123,7 +123,7 @@ export const PostCreate = () => {
                 }).then((data) => {
                     setSuccess(true)
                     setTimeout(() => {
-                        navigate('/post-detail?id=' + data.data)
+                        navigate('/post-list')
                     }, 2000)
                 })
                     .catch((e) => {
