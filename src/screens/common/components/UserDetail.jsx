@@ -71,7 +71,7 @@ export const UserDetail = () => {
                 setOpen(false)
                 setTimeout(() => {
                     window.location.reload()
-                }, 1000)
+                }, 3000)
             })
             .catch((e) => {
                 console.log(e)
@@ -137,7 +137,7 @@ export const UserDetail = () => {
         e.preventDefault()
         setErrorReport('')
         if (reason === '') setErrorReport("Reason is empty!")
-        else if (selectedImage.length === 0) setErrorReport("You must have evidences to report this user!")
+        else if (selectedImage === null) setErrorReport("You must have evidence to report!")
         else {
             setChoice('report')
             handleOpen()
@@ -243,24 +243,29 @@ export const UserDetail = () => {
                             <>
                                 <h3>You can only view this user contact via your exchange order with them!</h3>
                                 <br />
-                                <div>Reporting this user</div>
-                                <form className="pl-2" onSubmit={(e) => { submitReport(e) }}>
-                                    <label className="col-12">Reason*</label>
-                                    <textarea className="col-12" name="reason" value={reason} onChange={(e) => { setReason(e.target.value) }} placeholder="Write your reason here" rows={2} />
-                                    <label className="col-12">Evidence* </label>
-                                    {selectedImage &&
-                                        <a href={URL.createObjectURL(selectedImage)} target='_blank'>
-                                            <img
-                                                className='col-12'
-                                                alt="not found"
-                                                style={{ width: '170px', height: '170px' }}
-                                                src={URL.createObjectURL(selectedImage)}
-                                            />
-                                        </a>
-                                    }
-                                    <input type="file" className="form-control" id="ImageUploadRequest" name="ImageUploadRequest" accept="image/jpeg, image/png" onChange={handle_image} />
-                                    <button className="btn btn-info no-btn" type="submit">Report this user</button> <span className="text-danger">{errorReport}</span>
-                                </form>
+                                {result === '' ? <>
+                                    <h3 className="text-danger">Reporting this user</h3>
+                                    <form className="pl-2" onSubmit={(e) => { submitReport(e) }}>
+                                        <label className="col-12">Reason*</label>
+                                        <textarea className="col-12" name="reason" value={reason} onChange={(e) => { setReason(e.target.value) }} placeholder="Write your reason here" rows={2} />
+                                        <label className="col-12">Evidence* </label>
+                                        {selectedImage &&
+                                            <a href={URL.createObjectURL(selectedImage)} target='_blank'>
+                                                <img
+                                                    className='col-12'
+                                                    alt="not found"
+                                                    style={{ width: '170px', height: '170px' }}
+                                                    src={URL.createObjectURL(selectedImage)}
+                                                />
+                                            </a>
+                                        }
+                                        <input type="file" className="form-control" id="ImageUploadRequest" name="ImageUploadRequest" accept="image/jpeg, image/png" onChange={handle_image} />
+                                        <button className="btn btn-info no-btn" type="submit">Report this user</button> <span className="text-danger">{errorReport}</span>
+                                    </form>
+                                </> : <div>
+                                    <h3 className="font-italic text-info">{result}</h3>
+                                    <h5 className="font-italic text-info">We'll look into this soon!</h5>
+                                </div>}
                             </>
                         }
                         <div></div>

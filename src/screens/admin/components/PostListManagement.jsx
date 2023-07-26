@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useMemo } from 'react'
 import { LoadingSpinner } from '../../../components/loading/LoadingSpinner';
 import { Pagination } from '@mui/material';
@@ -21,6 +21,7 @@ const itemsPerPage = 8;
 export const AdminPostListManagement = () => {
     axios.defaults.baseURL = 'https://localhost:7115';
     const cookies = new Cookies()
+    const navigate = useNavigate()
     const [isError, setIsError] = useState(false)
     const [all, setAll] = useState([])
     const [pending, setPending] = useState([])
@@ -306,6 +307,7 @@ export const AdminPostListManagement = () => {
                                                                 </svg>
                                                             </a>
                                                         </div>
+                                                        <button onClick={() => { navigate('/admin/user-detail?id=' + item.accountId) }} className=' btn btn-info'>View Profile</button>
                                                         <button onClick={() => { handleAccept(item.postId) }} className={cn(item.statusName === 'Pending' ? 'btn btn-info yes-btn' : 'btn btn-secondary disabled')}>Accept</button>
                                                         <button onClick={() => { handleReject(item.postId) }} className={cn(item.statusName === 'Pending' ? 'btn btn-info no-btn' : 'btn btn-secondary disabled')}>Reject</button>
                                                     </div>

@@ -63,14 +63,18 @@ export const TransactionManagement = () => {
     function accept(id) {
         console.log(id)
         acceptOrder(id)
-        fetchData()
+        setTimeout(() => {
+            window.location.reload()
+        }, 2000)
     }
 
     function acceptAll(pending) {
         pending.map((item) => {
             acceptOrder(item.orderId)
         })
-        fetchData()
+        setTimeout(() => {
+            window.location.reload()
+        }, 2000)
     }
 
     const renderPending = (pending) => {
@@ -79,7 +83,7 @@ export const TransactionManagement = () => {
                 <div className='d-flex row'>
                     <h5 className='text-dark m-3 col-9'>{pending[0].fullName} - {pending[0].email} - Total: {VND.format(pending.reduce((a, v) => a = a + v.Price, 0)).replaceAll(',', '.')} VND - Just Added: { }</h5>
                     <div className='col-auto row align-items-center'>
-                        <button onClick={() => { navigate('/user-detail?id=' + pending[0].accountId) }} className='btn btn-info profile-btn'>See Profile</button>
+                        <button onClick={() => { navigate('/admin/user-detail?id=' + pending[0].accountId) }} className='btn btn-info profile-btn'>See Profile</button>
                         <button onClick={() => { acceptAll(pending) }} className='btn btn-info accept-all'>Accept All</button>
                     </div>
                 </div>
@@ -133,7 +137,7 @@ export const TransactionManagement = () => {
                                         <td>
                                             <div>
                                                 <td className='profile-row'>
-                                                    <button onClick={() => { navigate('/user-detail?id=' + item.accountId) }} className=' btn btn-info'>View Profile</button>
+                                                    <button onClick={() => { navigate('/admin/user-detail?id=' + item.accountId) }} className=' btn btn-info'>View Profile</button>
                                                 </td>
                                                 <td className='profile-row'>
                                                     <span className=''>{item.fullName} - {item.email}</span>

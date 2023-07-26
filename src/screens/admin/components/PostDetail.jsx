@@ -113,11 +113,7 @@ export const AdminPostDetail = () => {
                             <div style={{ width: '80%', height: '150px', overflowY: 'scroll', border: '1px solid grey' }}>{post.description}
                             </div>
                         </div>
-                        <div className='row col-md-12'>
-                            <div className='col-4'>
-                                <button style={{ width: '250px', borderRadius: '8px' }} className="post-detail-btn h3">Request this product</button>
-                            </div>
-                        </div>
+                        
                     </div >
                 </div>
             </div >

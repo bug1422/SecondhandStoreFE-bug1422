@@ -29,6 +29,7 @@ export const PaymentHistory = () => {
     const [completed, setCompleted] = useState([])
     const [filteredList, setFilteredList] = useState([])
     const [status, setStatus] = useState('All');
+    const [total, setTotal] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState('')
     let VND = new Intl.NumberFormat('vn-VN', {
@@ -45,6 +46,13 @@ export const PaymentHistory = () => {
                 setCompleted(list.filter((item) => { return item.topUpStatus === 'Completed' }))
                 setFilteredList(list)
                 setIsLoading(false)
+            })
+            .catch((e) => {
+                console.log(e)
+            })
+        await axios.get('/topup/get-user-total-topuptransaction-value')
+            .then((data) => {
+                setTotal(data.data)
             })
             .catch((e) => {
                 console.log(e)
@@ -75,14 +83,15 @@ export const PaymentHistory = () => {
         }
         if (data['keyword'] !== '') {
             updatedList = updatedList.filter((item) => {
-                let name = toLowerCaseNonAccentVietnamese(item.productName)
+                let point = toLowerCaseNonAccentVietnamese(item.topUpPoint)
+                let price = toLowerCaseNonAccentVietnamese(item.price)
                 let query = toLowerCaseNonAccentVietnamese(data['keyword'])
-                return name.indexOf((query || '')) !== -1
+                return point.indexOf((query || '')) !== -1 || price.indexOf((query || '') !== -1)
             });
         }
         if (data['date'] !== '') {
             updatedList = updatedList.filter((item) => {
-                return new Date(item.orderDate).getTime() > new Date(data['date']).getTime()
+                return new Date(item.topUpDate).getTime() > new Date(data['date']).getTime()
             })
         }
         setFilteredList(updatedList)
@@ -113,15 +122,15 @@ export const PaymentHistory = () => {
                         <button onClick={() => {
                             setFilteredList(all)
                             setStatus('All')
-                        }} class={cn("nav-link ", status == 'All' && 'active')} id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="">All ({all.length})</button>
+                        }} class={cn("nav-link ", status == 'All' && 'active')} id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="">All Payment ({all.length})</button>
                         <button onClick={() => {
                             setFilteredList(pending)
                             setStatus('Pending')
-                        }} class={cn("nav-link ", status == 'Pending' && 'active')} id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected=''>Pending Post ({pending.length})</button>
+                        }} class={cn("nav-link ", status == 'Pending' && 'active')} id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected=''>Pending Payment ({pending.length})</button>
                         <button onClick={() => {
                             setFilteredList(completed)
                             setStatus('Completed')
-                        }} class={cn("nav-link ", status == 'Completed' && 'active')} id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected=''>Completed Post ({completed.length})</button>
+                        }} class={cn("nav-link ", status == 'Completed' && 'active')} id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected=''>Completed Payment ({completed.length})</button>
                         <div></div>
                     </div>
                 </nav>
@@ -167,21 +176,25 @@ export const PaymentHistory = () => {
                                 <thead>
                                     <tr className='mb-1'>
                                         <th scope="col">#</th>
-                                        <th scope="col">Profile</th>
                                         <th scope="col">Point</th>
+                                        <th scope="col">Price</th>
                                         <th scope="col">Date Created</th>
                                         <th scope="col">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {paginatedItems.map((item) => (
+                                    {paginatedItems.map((item, index) => (
                                         <tr>
-                                            
+                                            <td>{index + 1}</td>
+                                            <td>{item.topUpPoint}</td>
+                                            <td>{VND.format(item.price).replaceAll(',', '.')} VND</td>
+                                            <td>{String(item.topUpDate).substring(0, 10)}</td>
+                                            <td>{item.topUpStatus}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table >
-                        </> : <h5 className="text-dark m-3 text-capitalize">No Post Found!</h5>}
+                        </> : <h5 className="text-dark m-3 text-capitalize">No Payment Found!</h5>}
                     </div>
                 </div>
             </div>
@@ -193,7 +206,7 @@ export const PaymentHistory = () => {
             <HeaderFE />
             <div className='d-flex'>
                 <div className='flex-1 container text-white bg-body-tertiary w-100 min-vh-100'>
-                    <h5 className='text-dark m-3'>Admin Post List</h5>
+                    <span className='h3 text-dark m-3'>Payment History <span className="h5">(total transfered: {VND.format(total).replaceAll(',', '.')} VND)</span></span>
                     {isLoading ? <LoadingSpinner /> : renderPost}
                 </div>
             </div>

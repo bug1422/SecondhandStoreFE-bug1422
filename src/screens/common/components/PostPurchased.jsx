@@ -127,7 +127,7 @@ export const PostPurchasedManagement = () => {
                                 <div class="col-md-3">
                                     <div className="post-list-card">
                                         <a href={"/post-detail?id=" + item.postId} style={{ textDecoration: 'none' }}>
-                                            <Card.Img variant="top" className='img-fluid' src={item.image} style={{ width: '100%', height: '150px', objectFit: 'cover' }} />
+                                            <Card.Img variant="top" className='img-fluid' src={item.images[0].ImageUrl} style={{ width: '100%', height: '150px', objectFit: 'cover' }} />
                                             <Card.Body>
                                                 <div style={{ color: 'black' }}><strong>{item.productName}</strong></div>
                                                 <div style={{ color: 'black' }}>{String(item.createdDate).substring(0, 10)}</div>
@@ -149,14 +149,16 @@ export const PostPurchasedManagement = () => {
         <>
             <HeaderFE />
             <div className='d-flex padding-bot'>
-                <div className='flex-1 container text-white bg-body-tertiary w-100 min-vh-100'>
+                <div className='flex-1 container text-white'>
                     <h5 className='text-dark m-3'>Purchased Posts</h5>
                     {filteredList.length === 0 ?
-                        <div className='create-post d-flex justify-content-center align-items-center'>
+                        <div style={{height:'550px'}} className='d-flex justify-content-center align-items-center'>
                             <div className=''>
-                                <span className='col-12'><h5 className='text-dark'>You haven't purchased anything, go buy some :/</h5>
+                                <span className='col-12'><h1 className='text-dark'>You haven't purchased anything, go buy some :/</h1>
                                 </span>
-                                <div className='col-12 text-dark d-flex justify-content-center'><button onClick={() => {navigate('/selling')}} className="btn btn-info">Go to Selling List</button><button onClick={() => {navigate('/donating')}} className="btn btn-warning">Go to Donating List</button></div>
+                                <div className='col-12 text-dark d-flex justify-content-center'>
+                                    <button onClick={() => { navigate('/selling') }} className="btn btn-info">Go to Selling List</button>
+                                    <button onClick={() => { navigate('/donating') }} className="btn btn-warning">Go to Donating List</button></div>
                             </div>
                         </div> : renderPost}
                 </div>
