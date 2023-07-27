@@ -156,11 +156,14 @@ export const PostDetail = () => {
                         <h4 className='col-md-auto'>
                             <strong>
                                 Seller:&nbsp;
-                                <a className='to-user-profile' href={'/user-detail?id=' + post.accountId}>
+                                <div onClick={() => {
+                                    if (isLogged) navigate('/user-detail?id='+post.accountId)
+                                    else navigate('/auth/login')
+                                }} className='to-user-profile'>
                                     <span className="post-detail">
                                         {post.accountId == Owner ? "You" : post.fullname}
                                     </span>
-                                </a>
+                                </div>
                             </strong>
                         </h4>
                     </div>
