@@ -88,28 +88,55 @@ export const PostEdit = () => {
         const data = Object.fromEntries(formData)
         console.log(data)
         setTimeout(async () => {
-            const response = await axios({
-                url: "posts/update-post?postId=" + postId,
-                data: {
-                    ProductName: data.ProductName,
-                    Description: data.Description,
-                    Price: data.Price,
-                    ImageUploadRequest: selectedImage === null ? null : data.ImageUploadRequest,
-                },
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-                method: "put",
-            }).then(() => {
-                setSuccess(true)
-                setTimeout(() => {
-                    navigate('/post-detail?id=' + postId)
-                }, 2000)
-            })
-                .catch((e) => {
-                    setError("something went wrong!")
-                    console.log(e)
+            if (selectedImage === null) {
+                console.log('yes')
+                const response = await axios({
+                    url: "posts/update-post?postId=" + postId,
+                    data: {
+                        ProductName: data.ProductName,
+                        Description: data.Description,
+                        Price: data.Price,
+                        ImageUploadRequest: null,
+                    },
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                    method: "put",
+                }).then(() => {
+                    setSuccess(true)
+                    setTimeout(() => {
+                        navigate('/post-detail?id=' + postId)
+                    }, 2000)
                 })
+                    .catch((e) => {
+                        setError("something went wrong!")
+                        console.log(e)
+                    })
+            }
+            else {
+                const response = await axios({
+                    url: "posts/update-post?postId=" + postId,
+                    data: {
+                        ProductName: data.ProductName,
+                        Description: data.Description,
+                        Price: data.Price,
+                        ImageUploadRequest: selectedImage === null ? null : data.ImageUploadRequest,
+                    },
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                    method: "put",
+                }).then(() => {
+                    setSuccess(true)
+                    setTimeout(() => {
+                        navigate('/post-detail?id=' + postId)
+                    }, 2000)
+                })
+                    .catch((e) => {
+                        setError("something went wrong!")
+                        console.log(e)
+                    })
+            }
         }, 1000)
     }
 
@@ -191,13 +218,9 @@ export const PostEdit = () => {
                                     <div className='row'>
                                         <div className="form-group col-md-6 mb-3 form-check flex items-center">
                                             <div className="mb-3">
-                                                <label htmlFor="image" className="form-label">Photos</label><br />
+                                                <label htmlFor="image" className="form-label">Images*</label><br />
                                                 <div className='col-md-12 form-image'>
-                                                    {post.image ? <><label htmlFor="" className="form-label">Previous Image:</label>
-                                                        <img src={post.image} className='col-5'
-                                                            alt="not found"
-                                                            width={"250px"}></img></> : <div className="form-label">No image found for this post: <ImageNotSupportedIcon /></div>}
-                                                    {selectedImage && (
+                                                        {selectedImage && (
                                                         <div className='row'>
                                                             <div className='col-8 justify-content-md-center'>
                                                                 <img
@@ -217,7 +240,7 @@ export const PostEdit = () => {
                                                     )}
                                                 </div>
                                                 <div className="input-group form-image">
-                                                    <label htmlFor="" className="form-label col-md-12">New Image (Optional):</label>
+                                                    <label htmlFor="" className="form-label col-md-12">New Image (Required):</label>
                                                     <input type="file" className="form-control" id="ImageUploadRequest" name="ImageUploadRequest" onChange={handle_image} />
                                                 </div>
                                             </div>

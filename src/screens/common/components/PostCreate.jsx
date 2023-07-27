@@ -220,13 +220,30 @@ export const PostCreate = () => {
                                         <div className="form-group col-md-6 mb-3 form-check flex items-center">
                                             <div className="mb-3">
                                                 <label htmlFor="image" className="form-label">Image*</label><br />
-                                                {selectedImage && <img
-                                                    className='col-12'
-                                                    alt="not found"
-                                                    style={{ width: '170px', height: '170px' }}
-                                                    src={URL.createObjectURL(selectedImage)}
-                                                />}
-                                                <input type="file" className="form-control" id="ImageUploadRequest" name="ImageUploadRequest" onChange={handle_image} />
+                                                <div className='col-md-12 form-image'>
+                                                    {selectedImage && (
+                                                        <div className='row'>
+                                                            <div className='col-8 justify-content-md-center'>
+                                                                <img
+                                                                    className='col-5'
+                                                                    alt="not found"
+                                                                    width={"250px"}
+                                                                    src={URL.createObjectURL(selectedImage)}
+                                                                />
+                                                            </div>
+                                                            <div className='col-auto'>
+                                                                <button className="btn btn-danger" onClick={() => {
+                                                                    document.getElementById("ImageUploadRequest").value = "";
+                                                                    setSelectedImage(null)
+                                                                }}>Remove</button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="input-group form-image">
+                                                    <label htmlFor="" className="form-label col-md-12">New Image (Required):</label>
+                                                    <input type="file" className="form-control" id="ImageUploadRequest" name="ImageUploadRequest" onChange={handle_image} />
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="form-group col-md-6 mb-3 form-check flex items-center">
