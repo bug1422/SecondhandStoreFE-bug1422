@@ -7,6 +7,7 @@ import axios from "axios"
 import { toLowerCaseNonAccentVietnamese } from '../../nonAccentVietnamese.js'
 import { Dialog } from "@mui/material";
 import { Stack } from "react-bootstrap";
+import cn from 'classnames'
 
 const itemsPerPage = 7;
 
@@ -61,6 +62,9 @@ export const UserManagement = () => {
 
     function handleSub() {
         updatePoint(selected.credibilityPoint - 10)
+        if (selected.credibilityPoint - 10 === 0) {
+            updateStatus()
+        }
         window.location.reload()
         setOpen(false)
     }
@@ -167,11 +171,12 @@ export const UserManagement = () => {
             </div>
             {
                 filteredList.length > 0 ?
-                    <div className="list-box">
+                    <div style={{height:'700px', overflowY:"scroll", border:'1px solid black'}} className="">
                         <table className="table custom-table">
                             <thead>
                                 <tr className='mb-1'>
                                     <th scope="col" className='text-center'>Account Id</th>
+                                    <th scope="col">Role</th>
                                     <th scope="col">Full name</th>
                                     <th scope="col">Address</th>
                                     <th scope="col">Email</th>
@@ -186,6 +191,7 @@ export const UserManagement = () => {
                                 {paginatedItems.map((account) => (
                                     <tr>
                                         <td>{account.accountId}</td>
+                                        <td><div className={cn("text-uppercase font-weight-bold",account.roleId === "DE" ? 'text-danger' : 'text-info')}>{account.roleId}</div></td>
                                         <td>{account.fullName}</td>
                                         <td>{account.address}</td>
                                         <td>{account.email}</td>

@@ -34,9 +34,13 @@ export const LogIn = () => {
             password: password
         }).then((data) => {
             let token = data.data.token
+            let decoded = jwt(token)
+            if (decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "DE") {
+                setError("Your account has been deactivated. Please contact admin for details! fptoseservice@gmail.com")
+                return
+            }
             let expireTime = remem ? 60 * 60 * 24 * 365 : 60 * 60
             cookies.set("jwt_authorization", token, { path: '/', maxAge: expireTime })
-            let decoded = jwt(token)
             if (decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "US") {
                 navigate('/', { replace: true })
             }

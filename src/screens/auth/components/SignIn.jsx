@@ -70,35 +70,6 @@ export const SignIn = () => {
             fetchData(data.email,data.password)
         }
     }
-    // const renderFormOld = (
-    //     <form className="row m-3" onSubmit={(e) => {
-    //         e.preventDefault()
-    //         handleForm()
-    //     }}>
-    //         <div className="col-md-12 mb-3">
-    //             <label for="email" className="form-label text-dark">Email</label>
-    //             <input type="text" onChange={(e) => setEmail(e.target.value)} className="form-control" id="email" />
-    //         </div>
-    //         <div className="col-md-12 mb-3">
-    //             <label for="password" className="form-label text-dark">Password</label>
-    //             <input type="password" onChange={(e) => setPassword(e.target.value)} className="form-control" id="password" />
-    //             <a href="/auth/recovery-request" className="form-text link__color form__helper">
-    //                 Forgot password?
-    //             </a>
-    //         </div>
-    //         <div className="col-md-6 mb-3 form-check flex items-center">
-    //             <div className="mx-3">
-    //                 <input onChange={(e) => setRemem(e.target.value)} type="checkbox" className="form-check-input" id="policies" />
-    //                 <label className="form-check-label text-bold" for="policies">Remember me</label>
-    //             </div>
-    //         </div>
-    //         <div className="col-md-6 d-flex justify-content-end">
-    //             <button type="submit" className="btn btn-dark">Login</button>
-    //         </div>
-    //         <div className="col-md-6 d-flex">
-    //         </div>
-    //     </form>
-    // )
     const renderForm = (
         <div id="all">
             <div id="content">
@@ -143,13 +114,6 @@ export const SignIn = () => {
     return (
         <div className="wrapper">
             {renderForm}
-            {/* {isLoading ? <>
-                <LoadingSpinner />
-                <a className="link__color my-3 col-md-auto d-flex justify-content-center" href="/auth/register">Don't have an account?</a>
-            </> :
-                <>
-                    {isSubmitted ? <div>User has successfully logged in, redirecting back to homepage...</div> : renderForm}
-                </>} */}
         </div >
     );
 }

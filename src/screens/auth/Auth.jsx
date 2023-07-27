@@ -7,7 +7,9 @@ export const Auth = () => {
     return (
         <>
             <HeaderFE />
-            <Outlet />
+            <div style={{ height: '700px' }}>
+                <Outlet />
+            </div>
             <FooterFE />
         </>
     );

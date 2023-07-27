@@ -34,11 +34,6 @@ export default function FooterFE() {
                     <Col md={4} sm={12}>
                         <div className="footer-right">
                             {/* <div className="right-title">Follow us</div> */}
-                            <div className="right-content">
-                                <p><a href="#gt">Giới thiệu</a></p>
-                                <p><a href="#gt">Chính sách bảo mật</a></p>
-                                <p><a href="#gt">Miễn trừ trách nhiệm</a></p>
-                            </div>
                         </div>
                     </Col>
                 </Row>
