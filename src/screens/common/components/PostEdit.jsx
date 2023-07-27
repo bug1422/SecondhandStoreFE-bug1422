@@ -82,36 +82,15 @@ export const PostEdit = () => {
     }, [isDonating])
 
     const onSubmit = async (e) => {
+        setError('')
         e.preventDefault()
         // setIsLoading(true)
         const formData = new FormData(e.currentTarget)
         const data = Object.fromEntries(formData)
-        console.log(data)
         setTimeout(async () => {
             if (selectedImage === null) {
-                console.log('yes')
-                const response = await axios({
-                    url: "posts/update-post?postId=" + postId,
-                    data: {
-                        ProductName: data.ProductName,
-                        Description: data.Description,
-                        Price: data.Price,
-                        ImageUploadRequest: null,
-                    },
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                    method: "put",
-                }).then(() => {
-                    setSuccess(true)
-                    setTimeout(() => {
-                        navigate('/post-detail?id=' + postId)
-                    }, 2000)
-                })
-                    .catch((e) => {
-                        setError("something went wrong!")
-                        console.log(e)
-                    })
+                setError("Image is not selected")
+                return
             }
             else {
                 const response = await axios({
@@ -220,7 +199,7 @@ export const PostEdit = () => {
                                             <div className="mb-3">
                                                 <label htmlFor="image" className="form-label">Images*</label><br />
                                                 <div className='col-md-12 form-image'>
-                                                        {selectedImage && (
+                                                    {selectedImage && (
                                                         <div className='row'>
                                                             <div className='col-8 justify-content-md-center'>
                                                                 <img
@@ -258,6 +237,7 @@ export const PostEdit = () => {
                                             <div className='row'>
                                                 {isDonating && <div>You don't have to pay point while donating. However, price is set to 0.</div>}
                                                 <button type="submit" className={cn("btn btn-primary")}>Update Product</button>
+                                                <p className="col-md-12 error">{error}</p>
                                             </div>
                                         </div>
                                     </div>

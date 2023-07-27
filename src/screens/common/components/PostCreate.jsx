@@ -104,7 +104,6 @@ export const PostCreate = () => {
         e.preventDefault()
         const formData = new FormData(e.currentTarget)
         const data = Object.fromEntries(formData)
-        console.log(data)
         if (selectedImage && data['ProductName'] !== '' && data['description'] !== '' && data['ProductName'] !== '') {
             setTimeout(() => {
                 axios.post("/posts/create-new-post",
