@@ -171,7 +171,7 @@ export const PostEdit = () => {
                                                     </select>
                                                 </div>
                                                 <div className='col-md-6'>
-                                                    <label htmlFor="PointCost" className="form-label">Priority Point</label>
+                                                    <label htmlFor="PointCost" className="form-label">Point Cost</label>
                                                     <input type="number" value={point} id="PointCost" name="PointCost" className="form-control" disabled />
                                                 </div>
                                             </div>

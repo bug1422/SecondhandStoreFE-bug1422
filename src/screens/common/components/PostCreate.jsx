@@ -197,7 +197,7 @@ export const PostCreate = () => {
                                                     </select>
                                                 </div>
                                                 <div className='col-md-6'>
-                                                    <label htmlFor="PointCost" className="form-label">Priority Point</label>
+                                                    <label htmlFor="PointCost" className="form-label">Point Cost</label>
                                                     <input type="number" value={point} id="PointCost" name="PointCost" className="form-control" disabled />
                                                 </div>
                                                 <div className='col-md-12 lead'>*Make sure your product is in right category or we won't accept it</div>
