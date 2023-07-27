@@ -233,7 +233,7 @@ export const UserDetail = () => {
                         {Owner === accountId ?
                             <>
                                 <h3 className="py-2">Phone Number: {account.phoneNo}</h3>
-                                <h3 className="py-2" style={{ wordBreak: "break-all" }}>Address: {account.Address}</h3>
+                                <h3 className="py-2" style={{ wordBreak: "break-all" }}>Address: {account.address}</h3>
                                 <h3 className="py-2">Credibility Point: {account.credibilityPoint}</h3>
                                 <h3 className="py-2">Point Balance: {account.pointBalance}</h3>
                                 <div className="row col-12">
@@ -275,7 +275,7 @@ export const UserDetail = () => {
             <div className="col-md-6">
                 <div className="card-custom mt-5">
                     <div style={{ height: '400px', overflowY: 'scroll' }}>
-                        {review.length === 0 ? <div className="h1 text-center">{Owner === accountId ? "You have no review" : "This user has no review"}</div> :
+                        {review.length === 0 ? <div className="h3 text-center">{Owner === accountId ? "You have no review" : "This user has no review"}</div> :
                             <div>
                                 <div className="h1 text-center">Review</div>
                                 {review.map((item) => (
