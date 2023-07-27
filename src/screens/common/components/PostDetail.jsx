@@ -118,7 +118,7 @@ export const PostDetail = () => {
     )
 
     const renderPost = (
-        <div style={{ height: '600px' }} className='post-detail padding-40'>
+        <div style={{ height: '700px' }} className='post-detail padding-40'>
             <div className='row'>
                 <div className='col-2 back-btn'>
                     <button onClick={() => { navigate(-1) }} type="button" className="btn btn-light fw-medium text-uppercase mb-5">
@@ -238,7 +238,7 @@ export const PostDetail = () => {
             <HeaderFE />
             {error === '' ?
                 renderPost :
-                <div style={{ height: '550px' }} className="text-center">
+                <div style={{ height: '700px' }} className="text-center">
                     The post is currently unavailable. Try again later!
                 </div>
             }
