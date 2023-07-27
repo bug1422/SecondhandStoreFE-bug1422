@@ -60,7 +60,7 @@ export const Order = () => {
     })
     setLoading(false)
     setTimeout(() => {
-      if (result.indexOf('Something') !== -1) window.location.reload()
+      if (result.indexOf('Something') === -1) window.location.reload()
       else {
         setTimeout(() => {
           setResult('')
@@ -200,7 +200,7 @@ export const Order = () => {
           <section className="bg0 p-t-75 p-b-120" style={{ height: '600px', padding: '0 20%' }}>
             <h3 class="mb-12 Account_box__yr82T p-6 text-black-600 text-18 mb-12">
               <strong>
-                My Order
+                People Order
               </strong>
               <h6>*People order sent to you!</h6></h3>
             <div class="mb-12 px-8 py-12 bg-white">
@@ -303,11 +303,18 @@ export const Order = () => {
                                 {order.orderStatusName === 'Cancelled' || order.orderStatusName === 'Completed' ?
                                   <strong style={{ fontSize: "48px" }} className='text-muted lead'>{order.orderStatusName}</strong> :
                                   order.orderStatusName === 'Processing' ?
-                                    <button style={{ width: '120px', height: '100px' }} onClick={() => {
-                                      setSelected(order.orderId)
-                                      setChoice('Complete')
-                                      handleClickOpen()
-                                    }} className='btn btn-success yes-btn text-center'><strong>Complete Order</strong></button> :
+                                    <>
+                                      <button style={{ width: '120px', height: '100px' }} onClick={() => {
+                                        setSelected(order.orderId)
+                                        setChoice('Complete')
+                                        handleClickOpen()
+                                      }} className='btn btn-success yes-btn text-center'><strong>Complete Order</strong></button>
+                                      <button style={{ width: '120px', height: '100px' }} onClick={() => {
+                                        setSelected(order.orderId)
+                                        setChoice('Cancel')
+                                        handleClickOpen()
+                                      }} className='btn btn-success no-btn text-center'><strong>Cancel Order</strong></button>
+                                    </> :
                                     <>
                                       <button style={{ width: '120px', height: '100px' }} onClick={() => {
                                         setSelected(order.orderId)
@@ -318,7 +325,7 @@ export const Order = () => {
                                         setSelected(order.orderId)
                                         setChoice('Cancel')
                                         handleClickOpen()
-                                      }} className='btn btn-success no-btn text-center'><strong>Deny Order</strong></button>
+                                      }} className='btn btn-success no-btn text-center'><strong>Cancel Order</strong></button>
                                     </>
                                 }
                               </td>
